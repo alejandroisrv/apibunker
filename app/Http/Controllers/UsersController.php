@@ -16,11 +16,17 @@ class UsersController extends Controller
         function createClient(Request $request){
 
             $data = $request->all();
-
-            Client::create([
-
-
+        
+            $client = Client::create([
+                'name'=> $data['name'],
+                'email' =>$data['email'],
+                'password' => Hash::make($data['password']),
+                'address' => $data['address'],
+                'number' => $data['number'],       
             ]);
+
+            return response()->json(['body'=> $client, 201]);
+
 
         }
         function getToken(Request $request){
@@ -30,6 +36,7 @@ class UsersController extends Controller
                     $data = $request->all();
                     $user = Client::where('email',$data['email'])->first();
                     if($user && Hash::check($data['password'],$user->password)){
+                        $user->api_token = str_random(63); 
                         return response()->json([$user],400);
                     }
                 }catch (ModelNotFoundException $e){
