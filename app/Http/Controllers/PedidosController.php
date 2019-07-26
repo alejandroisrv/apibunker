@@ -18,7 +18,7 @@ class PedidosController extends Controller
 
     }
 
-    function create(Request $request){
+    function newPedidos(Request $request){
 
     }
 
