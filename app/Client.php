@@ -3,21 +3,19 @@
 
 namespace App;
 
-use Illuminate\Auth\Authenticatable;
-use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
-{
-    use Authenticatable, Authorizable;
 
+class Client extends Model{
+   
 
     protected $fillable = ['name','email','password','api_token','direccion','numero'];
-
-
     protected $hidden = ['password'];
+
+    public function orders(){
+        return $this->hasMany('App\Order','user_id','id');
+
+    }
 
 
 

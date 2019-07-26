@@ -2,10 +2,11 @@
 
 
 
+$router->post('/users/login',['uses'=> 'ClientController@getToken']);
+
 $router->group(['middleware' => ['auth']], function () use ($router) {
 
-    $router->post('/users/login',['uses'=> 'ClientController@getToken']);
-    $router->post('/clients/login',['uses'=> 'ClientController@getToken']);
+    
 
     $router->get('/client/{id}',['uses'=> 'ClientController@getClient']);
     $router->get('/clients',['uses'=> 'ClientController@getClients']);
@@ -28,9 +29,11 @@ $router->group(['middleware' => ['auth']], function () use ($router) {
     $router->put('/order/{id}',['uses'=> 'OrdersController@delete']);
 
 
-    $router->get('/client/{id}',['uses'=> 'ClientController@getClient']);
-    $router->get('/clients',['uses'=> 'ClientController@getClients']);
+    $router->get('/pago/{id}',['uses'=> 'ClientController@getClient']);
+    $router->get('/pagos',['uses'=> 'ClientController@getClients']);
     $router->post('/client',['uses'=> 'ClientController@create']);
     $router->post('/client/update',['uses'=> 'ClientController@create']);
     $router->put('/client/{id}',['uses'=> 'ClientController@delete']);
+
+
 });
