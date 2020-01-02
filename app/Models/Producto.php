@@ -12,7 +12,22 @@ class Producto extends Model
     protected $table = 'productos';
 
     protected $fillable = [
-
+        'nombre',
+        'categoria_id',
+        'descripcion',
+        'precio',
+        'precionoche',
+        'cantidad',
+        'imagen',
+        'logo',
+        'pais',
+        'tipo',
+        'ventas',
+        'vistas'
     ];
 
+    public function categoria()
+    {
+        return $this->belongsTo(ProductoCategoria::class, 'categoria_id');
+    }
 }
