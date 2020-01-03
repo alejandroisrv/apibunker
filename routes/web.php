@@ -15,6 +15,7 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+<<<<<<< HEAD
 $router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],
     function () use ($router) {
         $router->post('/authenticate', 'AuthenticationController@authenticate');
@@ -23,3 +24,10 @@ $router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],
 
         $router->get('/productos','ProductosController@getProductos ');
     });
+=======
+$router->group(['namespace' => '\App\Http\Controllers\V1', 'prefix' => ''],function () use ($router) {
+        $router->post('authenticate', 'AuthenticationController@authenticate');
+        $router->post('user', 'UserController@store');
+    }
+);
+>>>>>>> 17f690ad6db077ee8a0f88aed4040a0432887d6a
