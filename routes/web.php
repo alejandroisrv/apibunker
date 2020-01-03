@@ -15,11 +15,11 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->group([
-    'namespace' => '\App\Http\Controllers\V1',
-    'prefix' => ''],
+$router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],
     function () use ($router) {
-        $router->post('authenticate', 'AuthenticationController@authenticate');
-        $router->post('user', 'UserController@store');
+        $router->post('/authenticate', 'AuthenticationController@authenticate');
+        $router->post('/user', 'UserController@store');
 
+
+        $router->get('/productos','ProductosController@getProductos ');
     });
