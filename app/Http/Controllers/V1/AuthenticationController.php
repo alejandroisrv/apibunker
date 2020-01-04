@@ -60,11 +60,11 @@ class AuthenticationController extends Controller {
             // attempt to verify the credentials and create a token for the user
             $token = $this->auth->attempt($credentials);
             if (!$token) {
-                return response()->json(['error' => 'invalid_credentials'], IlluminateResponse::HTTP_UNAUTHORIZED);
+                return response()->json(['error' => 'invalid_credentials'], 401);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(['error' => 'could_not_create_token'], IlluminateResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['error' => 'could_not_create_token'], 422);
         } finally{
             Database::disconnect();
         }
