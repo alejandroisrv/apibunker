@@ -4,12 +4,16 @@ namespace App\Http\Controllers\V1;
 
 use App\Business\Util\Database;
 use App\Http\Controllers\Controller;
+use App\Jobs\ClientActivationJob;
+use App\Models\Activacion;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as IlluminateResponse;
 use Tymon\JWTAuth\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-class AuthenticationController extends Controller {
+class AuthenticationController extends Controller
+{
 
     /**
      * @var JWTAuth
@@ -19,7 +23,8 @@ class AuthenticationController extends Controller {
     /**
      * @param JWTAuth $auth
      */
-    public function __construct(JWTAuth $auth){
+    public function __construct(JWTAuth $auth)
+    {
         $this->auth = $auth;
     }
 
@@ -52,24 +57,105 @@ class AuthenticationController extends Controller {
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function authenticate(Request $request)
+    public function login(Request $request)
     {
-        // grab credentials from the request
-        $credentials = $request->only('email', 'password');
+
         try {
-            // attempt to verify the credentials and create a token for the user
-            $token = $this->auth->attempt($credentials);
-            if (!$token) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+
+            $user = Cliente::where('email', $request->email)->first();
+
+            if($user) {
+                if($user->verificado === null) {
+                    return response()->json(['error' => 'Es necesario que actives tu correo electronico para poder iniciar sesión en tu cuenta'], 422);
+                }
             }
-        } catch (JWTException $e) {
-            // something went wrong whilst attempting to encode the token
-            return response()->json(['error' => 'could_not_create_token'], 422);
-        } finally{
-            Database::disconnect();
+
+            $credentials = $request->only('email', 'password');
+
+            if(!$token = $this->auth->attempt($credentials)) {
+                return response()->json(['error' => 'Los datos que has introducido son incorrectos'], 403);
+            }
+
+            return response()->json(['token'=> $token, 'user'=> $user, 'success'=> true],200);
+
+        }catch(\Exepction $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
         }
-        // all good so return the token
-        return response()->json(compact('token'));
     }
 
+    public function activate(Request $request)
+    {
+        $token = Activacion::where('token', $request->get('token'))->first();
+
+        if(!$token) {
+            return response()->json(['error' => true, 'mensaje' => 'No existe']);
+        }
+
+        $user = Cliente::where("email", $token->email)->first();
+
+        if(!$user) {
+            return response()->json(['error' => true, 'mensaje' => 'No existe']);
+        }
+
+        $user->verificado = date('Y-m-d H:i:s');
+
+        $user->save();
+
+        $token->delete();
+
+        return response()->json(['error' => false, 'mensaje' => 'Su cuenta se ha activado con exito!']);
+    }
+
+    public function register(Request $request){
+
+        
+        $validator = Validator::make($request->all(), [
+            'nombres' => 'bail|required',
+            'email' => 'bail|required|email|unique:clientes',
+            'password' => 'bail|required|min:6',
+            'password_confirmation' => 'bail|required|same:password'
+        ],[
+            'nombres.required' => 'Debe ingresar el nombre',
+            'email.required' => 'Debe ingresar el correo electronico',
+            'email.email' => 'Debe ingresar un correo electronico valido',
+            'email.unique' => 'El correo ingresado ya se encuentra registrado',
+            'password.required' => 'Debe ingresar la contraseña',
+            'password.min' => 'La contraseña debe tener un minimo de 6 caracteres',
+            'password_confirmation.required' => 'Debe repetir la contraseña',
+            'password_confirmation.same' => 'Las contraseñas ingresadas no coinciden',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+
+        DB::beginTransaction();
+        
+            $user = Cliente::create(
+                [
+                    'nombres' => $request->get('nombres'),
+                    'email' => $request->get('email'),
+                    'password' => bcrypt($request->get('password')),
+                    'revista' => $request->get('revista'),
+                    'areas_interes' => $request->get('areas_interes')
+                ]
+            );
+
+            $activacion = Activacion::create([
+                'email' => $user->email,
+                'token' => Str::random(50),
+                'fecha_creacion' => date('Y-m-d H:i:s')
+            ]);
+
+            $this->setConfig($request->get('revista'), $activacion->token);
+
+            dispatch(new ClientActivationJob($user));
+
+        DB::commit();
+
+        
+        
+        return response()->json(['response' => 'success']);
+    }
 }

@@ -18,7 +18,7 @@ $router->get('/', function () use ($router) {
 
 $router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],function () use ($router) {
     
-    $router->post('/authenticate', 'AuthenticationController@authenticate');
+    $router->post('/login', 'AuthenticationController@login');
     $router->post('/user', 'UserController@store');
 
     $router->get('/productos','ProductosController@getProductos');

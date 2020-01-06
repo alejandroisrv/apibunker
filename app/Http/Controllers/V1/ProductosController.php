@@ -17,12 +17,14 @@ class ProductosController extends Controller
         $categoria = $request->categoria;
         $search = $request->buscar;
 
-        $productos = Producto::when($request->categoria, function ($q) use ($categoria) {
-            return $q->where('categoria_id', $categoria);
+        $productos = ProductoCategoria::with('productos')->when($request->categoria, function ($q) use ($categoria) {
+            return $q->where('id', $categoria);
         })->when($request->buscar, function ($q) use ($search) {
-            return $q->where('nombre', 'like', '%' . $search . '%');
+            return $q->whereHas('productos', function ($q) use ($search) {
+                return $q->where('nombre', 'like', '%' . $search . '%');
+            });
         })->get();
-
+        
         return response()->json($productos);
     }
 

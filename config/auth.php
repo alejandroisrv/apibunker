@@ -56,7 +56,7 @@ return [
     */
 
     'providers' => [
-        'jwt' => ['driver' => 'eloquent', 'model' => App\Models\User::class]
+        'jwt' => ['driver' => 'eloquent', 'model' => App\Models\Cliente::class]
     ],
 
     /*
