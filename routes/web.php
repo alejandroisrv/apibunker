@@ -28,4 +28,7 @@ $router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],fun
     $router->get('/pedidos/','PedidosController@getPedidos');
     $router->get('/mis-pedidos/','PedidosController@getMyPedidos');
 
+
+    $router->get('/migration','ProductosController@migrationCategorias');
+
 });

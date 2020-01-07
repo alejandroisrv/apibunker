@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class ProductoCategoria extends Model
 {
 
-    protected $table = 'categorias';
+    protected $table = 'productos_categorias';
 
     protected $fillable = ['nombre','alias'];
+    public $timestamps = false;
 
 
     public function productos(){

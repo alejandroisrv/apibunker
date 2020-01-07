@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Producto;
 use App\Models\ProductoCategoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+use function _\trimEnd;
 
 class ProductosController extends Controller
 {
@@ -24,7 +27,9 @@ class ProductosController extends Controller
                 return $q->where('nombre', 'like', '%' . $search . '%');
             });
         })->get();
-        
+
+
+
         return response()->json($productos);
     }
 
@@ -38,5 +43,19 @@ class ProductosController extends Controller
     {
         $categorias = ProductoCategoria::all();
         return response()->json($categorias);
+    }
+
+    function migrationCategorias(Request $request)
+    {
+
+        DB::beginTransaction();
+
+        $categorias = ProductoCategoria::all();
+
+        $categorias->map(function ($cat) {
+            Producto::where('tipo', $cat->nombre)->update(['categoria_id' => $cat->id]);
+        });
+
+        DB::commit();
     }
 }
