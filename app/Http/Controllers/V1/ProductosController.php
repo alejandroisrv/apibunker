@@ -20,7 +20,10 @@ class ProductosController extends Controller
         $categoria = $request->categoria;
         $search = $request->buscar;
 
-        $productos = ProductoCategoria::with('productos')->when($request->categoria, function ($q) use ($categoria) {
+        $productos = collect();
+
+        $items = ProductoCategoria::with('productos')
+        ->when($request->categoria, function ($q) use ($categoria) {
             return $q->where('id', $categoria);
         })->when($request->buscar, function ($q) use ($search) {
             return $q->whereHas('productos', function ($q) use ($search) {
@@ -28,9 +31,7 @@ class ProductosController extends Controller
             });
         })->get();
 
-
-
-        return response()->json($productos);
+        return response()->json($items);
     }
 
     function getProducto(Request $request, $slug)
