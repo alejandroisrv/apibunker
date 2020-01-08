@@ -11,7 +11,7 @@ class ProductoCategoria extends Model
 
     protected $table = 'productos_categorias';
 
-    protected $fillable = ['nombre','alias'];
+    protected $fillable = ['nombre','imagen','alias'];
     public $timestamps = false;
 
 

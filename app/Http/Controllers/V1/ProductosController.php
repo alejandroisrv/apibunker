@@ -31,6 +31,10 @@ class ProductosController extends Controller
             });
         })->get();
 
+        $items->map(function($item){
+            
+        });
+
         return response()->json($items);
     }
 
