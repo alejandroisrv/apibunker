@@ -61,4 +61,9 @@ class Cliente extends Model implements AuthenticatableContract, AuthorizableCont
     {
         return [];
     }
+
+
+    public function favorites(){
+        return $this->belongsToMany(Producto::class, 'clientes_favoritos', 'cliente_id', 'producto_id');
+    }
 }

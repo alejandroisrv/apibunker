@@ -20,33 +20,51 @@ class ProductosController extends Controller
         $categoria = $request->categoria;
         $search = $request->buscar;
 
-        $productos = collect();
+        $items = ProductoCategoria::select('id', 'nombre', 'imagen')->with(['productos' => function ($q) {
+            return $q->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->get();
+        }])
+            ->when($request->categoria, function ($q) use ($categoria) {
+                return $q->where('id', $categoria);
+            })->when($request->buscar, function ($q) use ($search) {
+                return $q->whereHas('productos', function ($q) use ($search) {
+                    return $q->where('nombre', 'like', '%' . $search . '%');
+                });
+            })->whereNotIn('id', [12, 13, 15])->get();
 
-        $items = ProductoCategoria::with('productos')
-        ->when($request->categoria, function ($q) use ($categoria) {
-            return $q->where('id', $categoria);
-        })->when($request->buscar, function ($q) use ($search) {
-            return $q->whereHas('productos', function ($q) use ($search) {
-                return $q->where('nombre', 'like', '%' . $search . '%');
+        $items->map(function ($item) {
+            $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
+            $item->productos->map(function ($producto) {
+                $producto->id = $producto->idproductos;
+                $producto->imagen = config('global.base_url') . 'assets/img/b/' . $producto->imagen;
+                unset($producto->idproductos);
             });
-        })->get();
-
-        $items->map(function($item){
-            
         });
 
         return response()->json($items);
     }
 
+    function toggleFavorito(Request $request, $slug)
+    {
+
+
+        
+    }
+
     function getProducto(Request $request, $slug)
     {
-        $producto = Producto::with('categoria')->whereSlug($slug)->first();
+        $producto = Producto::whereSlug($slug)->first();
+        $producto->imagen = config('global.base_url') . 'assets/img/b/' . $producto->imagen;
         return response()->json($producto);
     }
 
     function getCategorias(Request $request)
     {
-        $categorias = ProductoCategoria::all();
+        $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')->get();
+
+        $categorias->map(function ($item) {
+            $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
+        });
+
         return response()->json($categorias);
     }
 
@@ -55,11 +73,15 @@ class ProductosController extends Controller
 
         DB::beginTransaction();
 
-        $categorias = ProductoCategoria::all();
+        $productos = Producto::all();
 
-        $categorias->map(function ($cat) {
-            Producto::where('tipo', $cat->nombre)->update(['categoria_id' => $cat->id]);
+        $productos->map(function ($item) {
+            $slug = str_slug($item->nombre);
+            $exists = Producto::where('slug', $slug)->exists();
+            $item->slug = $exists ? str_slug($item->nombre . str_random(1)) : $slug;
+            $item->save();
         });
+
 
         DB::commit();
     }

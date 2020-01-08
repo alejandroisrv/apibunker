@@ -65,6 +65,10 @@ $app->routeMiddleware([
     'auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
 ]);
 
+$app->alias('mailer', Illuminate\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);
+$app->alias('mailer', Illuminate\Contracts\Mail\MailQueue::class);
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -80,7 +84,8 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
-
+$app->configure('mail');
+$app->configure('global');
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

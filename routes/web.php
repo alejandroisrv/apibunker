@@ -19,16 +19,18 @@ $router->get('/', function () use ($router) {
 $router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],function () use ($router) {
     
     $router->post('/login', 'AuthenticationController@login');
-    $router->post('/user', 'UserController@store');
+    $router->post('/register', 'UserController@store');
+    $router->post('/user/update', 'UserController@updateUser');
 
+    $router->get('/producto/{slug}','ProductosController@getProducto');
     $router->get('/productos','ProductosController@getProductos');
-    $router->get('/productos/{slug}','ProductosController@getProducto');
     $router->get('/productos/categorias','ProductosController@getCategorias');
-
+    $router->get('/productos/favorito/{slug}','ProductosController@toggleFavorito');
+    
     $router->get('/pedidos/','PedidosController@getPedidos');
+    $router->post('/pedidos/nuevo','PedidosController@getMyPedidos');
     $router->get('/mis-pedidos/','PedidosController@getMyPedidos');
 
 
     $router->get('/migration','ProductosController@migrationCategorias');
-
 });
