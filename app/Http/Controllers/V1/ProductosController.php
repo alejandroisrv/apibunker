@@ -40,7 +40,7 @@ class ProductosController extends Controller
             });
         });
 
-        return response()->json($items);
+        return response()->json(['categorias' => $items]);
     }
 
     function toggleFavorito(Request $request, $slug)
