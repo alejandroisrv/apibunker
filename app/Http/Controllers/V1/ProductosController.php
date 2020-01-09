@@ -35,7 +35,7 @@ class ProductosController extends Controller
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
             $item->productos->map(function ($producto) {
                 $producto->id = $producto->idproductos;
-                $producto->imagen = config('global.base_url') . 'assets/img/bd/' . $producto->imagen;
+                $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
                 unset($producto->idproductos);
             });
         });
