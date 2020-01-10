@@ -63,6 +63,7 @@ class ProductosController extends Controller
 
         $categorias->map(function ($item) {
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
+            $item->productos = [];
         });
 
         return response()->json($categorias);
