@@ -66,7 +66,7 @@ class ProductosController extends Controller
             $item->productos = [];
         });
 
-        return response()->json($categorias);
+        return response()->json(['categorias'=> $categorias]);
     }
 
     function migrationCategorias(Request $request)
