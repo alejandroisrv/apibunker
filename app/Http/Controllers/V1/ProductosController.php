@@ -56,7 +56,10 @@ class ProductosController extends Controller
 
     function getCategorias(Request $request)
     {
-        $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')->get();
+        $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')
+        ->whereNotIn('id', [12, 13, 15])
+        ->orderBy('nombre','ASC')
+        ->get();
 
         $categorias->map(function ($item) {
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
