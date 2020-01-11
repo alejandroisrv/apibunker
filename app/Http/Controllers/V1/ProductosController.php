@@ -29,7 +29,7 @@ class ProductosController extends Controller
                 return $q->whereHas('productos', function ($q) use ($search) {
                     return $q->where('nombre', 'like', '%' . $search . '%');
                 });
-            })->whereNotIn('id', [12, 13, 15])->get();
+            })->whereNotIn('id', [11, 12, 13])->get();
 
         $items->map(function ($item) {
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
@@ -45,9 +45,6 @@ class ProductosController extends Controller
 
     function toggleFavorito(Request $request, $slug)
     {
-
-
-        
     }
 
     function getProducto(Request $request, $slug)
@@ -66,7 +63,7 @@ class ProductosController extends Controller
             $item->productos = [];
         });
 
-        return response()->json(['categorias'=> $categorias]);
+        return response()->json(['categorias' => $categorias]);
     }
 
     function migrationCategorias(Request $request)
@@ -82,7 +79,6 @@ class ProductosController extends Controller
             $item->slug = $exists ? str_slug($item->nombre . str_random(1)) : $slug;
             $item->save();
         });
-
 
         DB::commit();
     }
