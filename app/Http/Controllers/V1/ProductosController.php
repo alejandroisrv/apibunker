@@ -29,7 +29,7 @@ class ProductosController extends Controller
                 return $q->whereHas('productos', function ($q) use ($search) {
                     return $q->where('nombre', 'like', '%' . $search . '%');
                 });
-            })->whereNotIn('id', [11, 12, 13])->get();
+            })->whereNotIn('id', [11, 12, 13])->orderBy('id','ASC')->get();
 
         $items->map(function ($item) {
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
