@@ -29,7 +29,7 @@ class ProductosController extends Controller
                 return $q->whereHas('productos', function ($q) use ($search) {
                     return $q->where('nombre', 'like', '%' . $search . '%');
                 });
-            })->whereNotIn('id', [11, 12, 13])->orderBy('id','ASC')->get();
+            })->whereNotIn('id', [11, 12, 13])->get();
 
         $items->map(function ($item) {
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
@@ -58,7 +58,6 @@ class ProductosController extends Controller
     {
         $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')
         ->whereNotIn('id', [12, 13, 15])
-        ->orderBy('nombre','ASC')
         ->get();
 
         $categorias->map(function ($item) {
