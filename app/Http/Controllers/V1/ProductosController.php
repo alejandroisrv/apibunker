@@ -57,7 +57,7 @@ class ProductosController extends Controller
     function getCategorias(Request $request)
     {
         $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')
-        ->whereNotIn('id', [12, 13, 15])
+        ->whereNotIn('id', [11, 12, 13])
         ->get();
 
         $categorias->map(function ($item) {
