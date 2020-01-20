@@ -43,8 +43,17 @@ class ProductosController extends Controller
         return response()->json(['categorias' => $items]);
     }
 
-    function toggleFavorito(Request $request, $slug)
+    function toggleFavorito(Request $request)
     {
+
+
+        $user = auth()->user();
+        $producto = $request->producto;
+
+        $favorito = $user->favorites()->toggle([$producto]);
+
+
+        return response()->json(['response' => 'ok' ]);
     }
 
     function getProducto(Request $request, $slug)
@@ -57,9 +66,9 @@ class ProductosController extends Controller
     function getCategorias(Request $request)
     {
         $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')
-        ->whereNotIn('id', [12, 13, 15])
-        ->orderBy('nombre','ASC')
-        ->get();
+            ->whereNotIn('id', [12, 13, 15])
+            ->orderBy('nombre', 'ASC')
+            ->get();
 
         $categorias->map(function ($item) {
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
