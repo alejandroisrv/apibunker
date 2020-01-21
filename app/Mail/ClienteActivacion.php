@@ -1,6 +1,4 @@
-
 <?php
-
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
@@ -14,8 +12,9 @@ class ClienteActivacion extends Mailable {
     public $user;
     public $config;
 
-    public function __construct($user){
+    public function __construct($user,$config){
         $this->user = $user;
+        $this->config = $config;
     }
 
     /**

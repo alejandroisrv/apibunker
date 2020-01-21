@@ -14,10 +14,12 @@ class ClientActivationJob extends Job
      * @return void
      */
     public $user;
+    public $config;
 
-    public function __construct($user)
+    public function __construct($user, $config)
     {
         $this->user = $user;
+        $this->config = $config;
     }
 
     /**
@@ -27,6 +29,6 @@ class ClientActivationJob extends Job
      */
     public function handle()
     {
-        Mail::to($this->user->email)->send(new ClienteActivacion($this->user));
+        Mail::to($this->user->email)->send(new ClienteActivacion($this->user, $this->config));
     }
 }

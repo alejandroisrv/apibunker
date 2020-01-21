@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Uuids;
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
@@ -11,15 +12,11 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Cliente extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    use Authenticatable, Authorizable,Uuids;
 
     protected $table = "clientes";
+
+    public $incrementing = false;
 
     public $timestamps = false;
 
@@ -32,6 +29,12 @@ class Cliente extends Model implements AuthenticatableContract, AuthorizableCont
         'direccion',
         'verificado',
     ];
+
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
 
     /**
      * The attributes excluded from the model's JSON form.

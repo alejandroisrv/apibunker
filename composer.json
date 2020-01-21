@@ -6,11 +6,12 @@
     "type": "project",
     "require": {
         "php": ">=7.1.3",
+        "guzzlehttp/guzzle": "~6.0",
         "illuminate/mail": "5.8.*",
         "laravel/lumen-framework": "5.8.*",
         "tymon/jwt-auth": "1.0.0.*@dev",
         "vluzrmos/lumen-cors": "2.1.*",
-        "guzzlehttp/guzzle": "~6.0"
+        "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

@@ -9,6 +9,9 @@ use App\Models\Activacion;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as IlluminateResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -64,21 +67,20 @@ class AuthenticationController extends Controller
 
             $user = Cliente::where('email', $request->email)->first();
 
-            if($user) {
-                if($user->verificado === null) {
-                    return response()->json(['error' => 'Es necesario que actives tu correo electronico para poder iniciar sesión en tu cuenta'], 422);
-                }
+            if ($user) {
+                // if ($user->verificado === null) {
+                //     return response()->json(['error' => 'Es necesario que actives tu correo electronico para poder iniciar sesión en tu cuenta'], 422);
+                // }
             }
 
             $credentials = $request->only('email', 'password');
 
-            if(!$token = $this->auth->attempt($credentials)) {
+            if (!$token = $this->auth->attempt($credentials)) {
                 return response()->json(['error' => 'Los datos que has introducido son incorrectos'], 403);
             }
 
-            return response()->json(['token'=> $token, 'user'=> $user, 'success'=> true],200);
-
-        }catch(\Exepction $e) {
+            return response()->json(['token' => $token, 'user' => $user, 'success' => true], 200);
+        } catch (\Exepction $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
     }
@@ -87,13 +89,13 @@ class AuthenticationController extends Controller
     {
         $token = Activacion::where('token', $request->get('token'))->first();
 
-        if(!$token) {
+        if (!$token) {
             return response()->json(['error' => true, 'mensaje' => 'No existe']);
         }
 
         $user = Cliente::where("email", $token->email)->first();
 
-        if(!$user) {
+        if (!$user) {
             return response()->json(['error' => true, 'mensaje' => 'No existe']);
         }
 
@@ -106,15 +108,16 @@ class AuthenticationController extends Controller
         return response()->json(['error' => false, 'mensaje' => 'Su cuenta se ha activado con exito!']);
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
 
-        
+
         $validator = Validator::make($request->all(), [
             'nombres' => 'bail|required',
             'email' => 'bail|required|email|unique:clientes',
             'password' => 'bail|required|min:6',
             'password_confirmation' => 'bail|required|same:password'
-        ],[
+        ], [
             'nombres.required' => 'Debe ingresar el nombre',
             'email.required' => 'Debe ingresar el correo electronico',
             'email.email' => 'Debe ingresar un correo electronico valido',
@@ -130,13 +133,15 @@ class AuthenticationController extends Controller
         }
 
 
-        DB::beginTransaction();
-        
+        try {
+
+            DB::beginTransaction();
+
             $user = Cliente::create(
                 [
                     'nombres' => $request->get('nombres'),
                     'email' => $request->get('email'),
-                    'password' => bcrypt($request->get('password')),
+                    'password' =>  app('hash')->make($request->password),
                     'revista' => $request->get('revista'),
                     'areas_interes' => $request->get('areas_interes')
                 ]
@@ -148,14 +153,33 @@ class AuthenticationController extends Controller
                 'fecha_creacion' => date('Y-m-d H:i:s')
             ]);
 
-            $this->setConfig($request->get('revista'), $activacion->token);
+            $this->setConfig($activacion->token);
 
-            dispatch(new ClientActivationJob($user));
+            dispatch(new ClientActivationJob($user, $this->config));
 
-        DB::commit();
+            DB::commit();
 
-        
-        
-        return response()->json(['response' => 'success']);
+
+
+            return response()->json(['response' => 'success']);
+        } catch (\Exepction $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+    }
+
+    public function setConfig($token = "")
+    {
+        $this->config = [
+            'header_bgcolor' => '#2E79BE',
+            'body_bgcolor' => '#eeeeee',
+            'activate' => config('global.base_url') . 'activar/' . $token,
+            'recover' => config('global.base_url') . 'recuperar/' . $token,
+            'logo' => config('global.base_url'),
+            'www' => 'www.elbunker.pe',
+            'copyright' => 'Todos los derechos reservados. El bunker 2018',
+            'revista_ip' => 'El bunker',
+            'footer_bgcolor' => '#2E79BE',
+            'subtitle_bgcolor' => '#254085'
+        ];
     }
 }

@@ -19,7 +19,7 @@ $router->get('/', function () use ($router) {
 $router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],function () use ($router) {
     
     $router->post('/login', 'AuthenticationController@login');
-    $router->post('/register', 'UserController@store');
+    $router->post('/register', 'AuthenticationController@register');
     $router->post('/user/update', 'UserController@updateUser');
 
     $router->get('/producto/{slug}','ProductosController@getProducto');
