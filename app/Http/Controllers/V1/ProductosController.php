@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Producto;
 use App\Models\ProductoCategoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 use function _\trimEnd;
@@ -47,14 +48,21 @@ class ProductosController extends Controller
     {
 
 
-        $user = auth()->user();
-        $producto = $request->producto;
+        $user = Auth::user();
 
-        $favorito = $user->favorites()->toggle([$producto]);
+        $producto = $request->producto;
+        
+        $user->favorites()->toggle([$producto]);
 
 
         return response()->json(['response' => 'ok' ]);
     }
+
+    function addCart(Request $request){
+        
+
+    }
+
 
     function getProducto(Request $request, $slug)
     {

@@ -16,21 +16,28 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->group(['namespace' => '\App\Http\Controllers\V1','prefix' => 'api'],function () use ($router) {
-    
+$router->group(['namespace' => '\App\Http\Controllers\V1', 'prefix' => 'api'], function () use ($router) {
+
     $router->post('/login', 'AuthenticationController@login');
     $router->post('/register', 'AuthenticationController@register');
     $router->post('/user/update', 'UserController@updateUser');
-
-    $router->get('/producto/{slug}','ProductosController@getProducto');
-    $router->get('/productos','ProductosController@getProductos');
-    $router->get('/productos/categorias','ProductosController@getCategorias');
-    $router->get('/productos/favorito/{slug}','ProductosController@toggleFavorito');
+    //GET DATA
     
-    $router->get('/pedidos/','PedidosController@getPedidos');
-    $router->post('/pedidos/nuevo','PedidosController@getMyPedidos');
-    $router->get('/mis-pedidos/','PedidosController@getMyPedidos');
+    
+    $router->group(['middleware' => ['jwt.auth']], function () use ($router) {
+        $router->get('/producto/{slug}', 'ProductosController@getProducto');
+        $router->get('/productos', 'ProductosController@getProductos');
+        $router->get('/productos/categorias', 'ProductosController@getCategorias');
+        $router->get('/productos/favorito', 'ProductosController@toggleFavorito');
+
+        
+    });
 
 
-    $router->get('/migration','ProductosController@migrationCategorias');
+    $router->get('/pedidos/', 'PedidosController@getPedidos');
+    $router->post('/pedidos/nuevo', 'PedidosController@getMyPedidos');
+    $router->get('/mis-pedidos/', 'PedidosController@getMyPedidos');
+
+
+    $router->get('/migration', 'ProductosController@migrationCategorias');
 });

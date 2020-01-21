@@ -5,6 +5,7 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Producto extends Model
 {
@@ -30,8 +31,19 @@ class Producto extends Model
         'vistas'
     ];
 
+    public $appends = ['favorite'];
+
     public function categoria()
     {
         return $this->belongsTo(ProductoCategoria::class, 'categoria_id');
     }
+
+
+    public function getFavoriteAttribute(){
+
+        $user = Auth::user(); 
+        return  $user->favorites()->where('id_producto',$this->id)->exists();
+
+    }
+
 }
