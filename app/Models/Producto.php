@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Producto extends Model
 {
@@ -15,7 +16,7 @@ class Producto extends Model
 
     protected $primaryKey = 'idproductos';
 
-    
+
     protected $fillable = [
         'nombre',
         'categoria_id',
@@ -39,11 +40,16 @@ class Producto extends Model
     }
 
 
-    public function getFavoriteAttribute(){
+    public function getFavoriteAttribute()
+    {
 
-        $user = Auth::user(); 
-        return  $user->favorites()->where('id_producto',$this->id)->exists();
+        $user = Auth::user();
+        $exists = DB::table('clientes_favoritos')
+            ->where('id_producto', $this->id)
+            ->where('id_cliente', $user->id)
+            ->exists();
 
+            
+        return  $exists;
     }
-
 }
