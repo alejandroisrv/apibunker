@@ -44,11 +44,8 @@ class Producto extends Model
     {
 
         $user = Auth::user();
-        $exists = DB::table('clientes_favoritos')
-            ->where('id_producto', $this->id)
-            ->where('id_cliente', $user->id)
-            ->exists();
-
+        
+        $exists = DB::table('clientes_favoritos')->where('id_producto', $this->id)->where('id_cliente', $user->id)->exists();
             
         return  $exists;
     }

@@ -71,7 +71,7 @@ class Cliente extends Model implements AuthenticatableContract, AuthorizableCont
     }
 
     public function cart(){
-        return $this->belongsToMany(Producto::class,'clientes_carrito','id_cliente','id_productos')->withPivot('cantidad','fecha');
+        return $this->belongsToMany(Producto::class,'clientes_carrito','id_cliente','id_producto')->withPivot('cantidad','fecha_creacion');
     }
 
 

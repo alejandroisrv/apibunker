@@ -37,11 +37,13 @@ class ProductosController extends Controller
             $item->productos->map(function ($producto) {
                 $producto->id = $producto->idproductos;
                 $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
+                $producto->nombre_categoria = $producto->categoria->nombre; 
                 unset($producto->idproductos);
+                unset($producto->categoria);
             });
         });
 
-        return response()->json(['categorias' => $items]);
+        return response()->json(['body' => $items]);
     }
 
     function toggleFavorito(Request $request)
@@ -51,15 +53,24 @@ class ProductosController extends Controller
         $user = Auth::user();
 
         $producto = $request->producto;
-        
+
         $user->favorites()->toggle([$producto]);
 
 
-        return response()->json(['response' => 'ok' ]);
+        return response()->json(['response' => 'ok']);
     }
 
-    function addCart(Request $request){
-        
+    function addCart(Request $request)
+    {
+
+        $user = Auth::user();
+
+        $producto = $request->producto;
+
+        $user->cart()->detach($producto);
+        $user->cart()->attach($producto,['cantidad' => $request->cantidad ]);
+
+        return response()->json(['response' => 'ok']);
 
     }
 
@@ -74,15 +85,47 @@ class ProductosController extends Controller
     function getCategorias(Request $request)
     {
         $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')
-        ->whereNotIn('id', [11, 12, 13])
-        ->get();
+            ->whereNotIn('id', [11, 12, 13])
+            ->get();
 
         $categorias->map(function ($item) {
             $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
             $item->productos = [];
         });
 
-        return response()->json(['categorias' => $categorias]);
+        return response()->json(['body' => $categorias]);
+    }
+
+
+    function getProductosFavoritos(Request $request)
+    {
+
+        $productos = Auth::user()->favorites()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->get();
+        $productos->map(function ($producto) {
+            $producto->id = $producto->idproductos;
+            $producto->nombre_categoria = $producto->categoria->nombre; 
+            $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
+            unset($producto->idproductos);
+            unset($producto->categoria);
+        });
+        return response()->json(['body' => $productos]);
+    }
+
+    function getProductosCart(Request $request){
+        $productos = Auth::user()->cart()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->get();
+        
+        $productos->map(function ($producto) {
+            $producto->id = $producto->idproductos;
+            $producto->nombre_categoria = $producto->categoria->nombre; 
+            $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
+            $producto->cantidad = $producto->pivot->cantidad;
+            unset($producto->idproductos);
+            unset($producto->categoria);
+        });
+
+        return response()->json(['body' => $productos]);
+
+
     }
 
     function migrationCategorias(Request $request)

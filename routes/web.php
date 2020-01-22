@@ -20,7 +20,7 @@ $router->group(['namespace' => '\App\Http\Controllers\V1', 'prefix' => 'api'], f
 
     $router->post('/login', 'AuthenticationController@login');
     $router->post('/register', 'AuthenticationController@register');
-    $router->post('/user/update', 'UserController@updateUser');
+    
     //GET DATA
     
     
@@ -28,15 +28,21 @@ $router->group(['namespace' => '\App\Http\Controllers\V1', 'prefix' => 'api'], f
         $router->get('/producto/{slug}', 'ProductosController@getProducto');
         $router->get('/productos', 'ProductosController@getProductos');
         $router->get('/productos/categorias', 'ProductosController@getCategorias');
-        $router->get('/productos/favorito', 'ProductosController@toggleFavorito');
+        $router->get('/productos/favoritos', 'ProductosController@getProductosFavoritos');
+        $router->get('/productos/cart', 'ProductosController@getProductosCart');
+        $router->get('/productos/cart/add', 'ProductosController@addCart');
+        $router->get('/productos/toggle/favorito', 'ProductosController@toggleFavorito');
 
-        
+        $router->get('/pedidos/', 'PedidosController@getPedidos');
+        $router->post('/pedidos/nuevo', 'PedidosController@nuevoPedido');
+        $router->get('/mis-pedidos/', 'PedidosController@getMyPedidos');
+
+        $router->get('/user/profile','UserController@getMyProfile');
+        $router->post('/user/update', 'UserController@updateUser');
     });
 
 
-    $router->get('/pedidos/', 'PedidosController@getPedidos');
-    $router->post('/pedidos/nuevo', 'PedidosController@getMyPedidos');
-    $router->get('/mis-pedidos/', 'PedidosController@getMyPedidos');
+   
 
 
     $router->get('/migration', 'ProductosController@migrationCategorias');
