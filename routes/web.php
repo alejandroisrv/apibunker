@@ -22,16 +22,15 @@ $router->group(['namespace' => '\App\Http\Controllers\V1', 'prefix' => 'api'], f
     $router->post('/register', 'AuthenticationController@register');
     
     //GET DATA
-    
-    
     $router->group(['middleware' => ['jwt.auth']], function () use ($router) {
         $router->get('/producto/{slug}', 'ProductosController@getProducto');
         $router->get('/productos', 'ProductosController@getProductos');
         $router->get('/productos/categorias', 'ProductosController@getCategorias');
         $router->get('/productos/favoritos', 'ProductosController@getProductosFavoritos');
+        $router->get('/productos/favoritos/toggle', 'ProductosController@toggleFavorito');
         $router->get('/productos/cart', 'ProductosController@getProductosCart');
         $router->get('/productos/cart/add', 'ProductosController@addCart');
-        $router->get('/productos/toggle/favorito', 'ProductosController@toggleFavorito');
+        
 
         $router->get('/pedidos/', 'PedidosController@getPedidos');
         $router->post('/pedidos/nuevo', 'PedidosController@nuevoPedido');
@@ -41,9 +40,6 @@ $router->group(['namespace' => '\App\Http\Controllers\V1', 'prefix' => 'api'], f
         $router->post('/user/update', 'UserController@updateUser');
     });
 
-
-   
-
-
     $router->get('/migration', 'ProductosController@migrationCategorias');
+    
 });
