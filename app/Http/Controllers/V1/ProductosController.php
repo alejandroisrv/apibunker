@@ -37,7 +37,7 @@ class ProductosController extends Controller
             $item->productos->map(function ($producto) {
                 $producto->id = $producto->idproductos;
                 $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
-                $producto->nombre_categoria = $producto->categoria->nombre; 
+                $producto->nombre_categoria = $producto->categoria->nombre;
                 unset($producto->idproductos);
                 unset($producto->categoria);
             });
@@ -68,10 +68,9 @@ class ProductosController extends Controller
         $producto = $request->producto;
 
         $user->cart()->detach($producto);
-        $user->cart()->attach($producto,['cantidad' => $request->cantidad ]);
+        $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
 
         return response()->json(['response' => 'ok']);
-
     }
 
 
@@ -103,7 +102,7 @@ class ProductosController extends Controller
         $productos = Auth::user()->favorites()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->get();
         $productos->map(function ($producto) {
             $producto->id = $producto->idproductos;
-            $producto->nombre_categoria = $producto->categoria->nombre; 
+            $producto->nombre_categoria = $producto->categoria->nombre;
             $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
             unset($producto->idproductos);
             unset($producto->categoria);
@@ -111,12 +110,13 @@ class ProductosController extends Controller
         return response()->json(['body' => $productos]);
     }
 
-    function getProductosCart(Request $request){
-        $productos = Auth::user()->cart()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->get();
-        
+    function getProductosCart(Request $request)
+    {
+        $productos = Auth::user()->cart()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->orderBy('fecha_creacion')->get();
+
         $productos->map(function ($producto) {
             $producto->id = $producto->idproductos;
-            $producto->nombre_categoria = $producto->categoria->nombre; 
+            $producto->nombre_categoria = $producto->categoria->nombre;
             $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
             $producto->cantidad = $producto->pivot->cantidad;
             unset($producto->idproductos);
@@ -124,8 +124,6 @@ class ProductosController extends Controller
         });
 
         return response()->json(['body' => $productos]);
-
-
     }
 
     function migrationCategorias(Request $request)
