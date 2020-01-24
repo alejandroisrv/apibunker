@@ -20,7 +20,7 @@ $router->post('/login', 'AuthenticationController@login');
 $router->post('/register', 'AuthenticationController@register');
 
 //GET DATA
-$router->group(['middleware' => ['jwt.auth']], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/producto/{slug}', 'ProductosController@getProducto');
     $router->get('/productos', 'ProductosController@getProductos');
     $router->get('/productos/categorias', 'ProductosController@getCategorias');
