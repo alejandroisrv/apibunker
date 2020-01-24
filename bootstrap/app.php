@@ -99,7 +99,7 @@ $app->configure('global');
 */
 
 $app->router->group([
-    'namespace' => 'App\Http\Controllers',
+    'namespace' => 'App\Http\Controllers\V1',
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
 });
