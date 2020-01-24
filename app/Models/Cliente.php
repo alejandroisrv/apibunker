@@ -67,11 +67,11 @@ class Cliente extends Model implements AuthenticatableContract, AuthorizableCont
 
 
     public function favorites(){
-        return $this->belongsToMany(Producto::class, 'clientes_favoritos', 'id_cliente', 'id_producto')->orderBy('fecha_creacion');
+        return $this->belongsToMany(Producto::class, 'clientes_favoritos', 'id_cliente', 'id_producto')->orderBy('fecha_creacion','DESC');
     }
 
     public function cart(){
-        return $this->belongsToMany(Producto::class,'clientes_carrito','id_cliente','id_producto')->withPivot('cantidad','fecha_creacion')->orderBy('fecha_creacion');
+        return $this->belongsToMany(Producto::class,'clientes_carrito','id_cliente','id_producto')->withPivot('cantidad','fecha_creacion')->orderBy('fecha_creacion','DESC');
     }
 
 
