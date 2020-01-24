@@ -99,7 +99,7 @@ class ProductosController extends Controller
     function getProductosFavoritos(Request $request)
     {
 
-        $productos = Auth::user()->favorites()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->get();
+        $productos = Auth::user()->favorites()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->orderBy('fecha_creacion','DESC')->get();
         $productos->map(function ($producto) {
             $producto->id = $producto->idproductos;
             $producto->nombre_categoria = $producto->categoria->nombre;
@@ -112,7 +112,7 @@ class ProductosController extends Controller
 
     function getProductosCart(Request $request)
     {
-        $productos = Auth::user()->cart()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->orderBy('fecha_creacion')->get();
+        $productos = Auth::user()->cart()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->orderBy('fecha_creacion','DESC')->get();
 
         $productos->map(function ($producto) {
             $producto->id = $producto->idproductos;
