@@ -16,30 +16,26 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->group(['namespace' => '\App\Http\Controllers\V1', 'prefix' => 'api'], function () use ($router) {
+$router->post('/login', 'AuthenticationController@login');
+$router->post('/register', 'AuthenticationController@register');
 
-    $router->post('/login', 'AuthenticationController@login');
-    $router->post('/register', 'AuthenticationController@register');
+//GET DATA
+$router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->get('/producto/{slug}', 'ProductosController@getProducto');
+    $router->get('/productos', 'ProductosController@getProductos');
+    $router->get('/productos/categorias', 'ProductosController@getCategorias');
+    $router->get('/productos/favoritos', 'ProductosController@getProductosFavoritos');
+    $router->get('/productos/favoritos/toggle', 'ProductosController@toggleFavorito');
+    $router->get('/productos/cart', 'ProductosController@getProductosCart');
+    $router->get('/productos/cart/add', 'ProductosController@addCart');
     
-    //GET DATA
-    $router->group(['middleware' => ['jwt.auth']], function () use ($router) {
-        $router->get('/producto/{slug}', 'ProductosController@getProducto');
-        $router->get('/productos', 'ProductosController@getProductos');
-        $router->get('/productos/categorias', 'ProductosController@getCategorias');
-        $router->get('/productos/favoritos', 'ProductosController@getProductosFavoritos');
-        $router->get('/productos/favoritos/toggle', 'ProductosController@toggleFavorito');
-        $router->get('/productos/cart', 'ProductosController@getProductosCart');
-        $router->get('/productos/cart/add', 'ProductosController@addCart');
-        
 
-        $router->get('/pedidos/', 'PedidosController@getPedidos');
-        $router->post('/pedidos/nuevo', 'PedidosController@nuevoPedido');
-        $router->get('/mis-pedidos/', 'PedidosController@getMyPedidos');
+    $router->get('/pedidos/', 'PedidosController@getPedidos');
+    $router->post('/pedidos/nuevo', 'PedidosController@nuevoPedido');
+    $router->get('/mis-pedidos/', 'PedidosController@getMyPedidos');
 
-        $router->get('/user/profile','UserController@getMyProfile');
-        $router->post('/user/update', 'UserController@updateUser');
-    });
-
-    $router->get('/migration', 'ProductosController@migrationCategorias');
-    
+    $router->get('/user/profile','UserController@getMyProfile');
+    $router->post('/user/update', 'UserController@updateUser');
 });
+
+$router->get('/migration', 'ProductosController@migrationCategorias');
