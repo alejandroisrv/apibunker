@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\V1;
 
 
@@ -17,13 +18,13 @@ class ProductosController extends Controller
     {
 
         try {
-            
-        
+
+
             $categoria = $request->categoria;
             $search = $request->buscar;
 
-            $items = ProductoCategoria::select('id', 'nombre', 'imagen')->with(['productos' => function ($q) {
-                return $q->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->get();
+            $items = ProductoCategoria::with(['productos' => function ($q) {
+                return $q->selectRaw('idproductos as id,nombre,slug,categoria_id,imagen,descripcion,precionoche')->get();
             }])
                 ->when($request->categoria, function ($q) use ($categoria) {
                     return $q->where('id', $categoria);
@@ -31,23 +32,19 @@ class ProductosController extends Controller
                     return $q->whereHas('productos', function ($q) use ($search) {
                         return $q->where('nombre', 'like', '%' . $search . '%');
                     });
-                })->whereNotIn('id', [11, 12, 13])->get();
+                })->whereNotIn('id', [11, 12, 13])->get(['id', 'nombre', 'imagen']);
 
             $items->map(function ($item) {
                 $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
                 $item->productos->map(function ($producto) {
-                    $producto->id = $producto->idproductos;
                     $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
                     $producto->nombre_categoria = $producto->categoria->nombre;
-                    unset($producto->idproductos);
                     unset($producto->categoria);
                 });
             });
 
             return response()->json(['body' => $items]);
-
-
-        } catch(\Exepction $e) {
+        } catch (\Exepction $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
     }
@@ -62,7 +59,6 @@ class ProductosController extends Controller
 
         $user->favorites()->toggle([$producto]);
 
-
         return response()->json(['response' => 'ok']);
     }
 
@@ -73,12 +69,24 @@ class ProductosController extends Controller
 
         $producto = $request->producto;
 
-        $user->cart()->detach($producto);
-        
-        if($request->cantidad > 0){
+        if ($request->cantidad == 0) {
+            $user->cart()->detach($producto);
+            return response()->json(['response' => 'ok']);
+        }
+
+        if (!$user->cart()->where('id_producto', $producto)->update(['clientes_carrito.cantidad' => $request->cantidad])) {
             $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
         }
+
+        return response()->json(['response' => 'ok']);
+    }
+
+    function setEmptyCart(Request $request)
+    {
+
+        $user = Auth::user();
         
+        $user->cart()->detach();
 
         return response()->json(['response' => 'ok']);
     }
@@ -86,11 +94,11 @@ class ProductosController extends Controller
 
     function getProducto(Request $request, $slug)
     {
-        try{
+        try {
             $producto = Producto::whereSlug($slug)->first();
             $producto->imagen = config('global.base_url') . 'assets/img/b/' . $producto->imagen;
             return response()->json($producto);
-        } catch(\Exepction $e) {
+        } catch (\Exepction $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
     }
@@ -98,62 +106,54 @@ class ProductosController extends Controller
     function getCategorias(Request $request)
     {
         try {
-            
-        
-        $categorias = ProductoCategoria::selectRaw('id,nombre,imagen')
-            ->whereNotIn('id', [11, 12, 13])
-            ->get();
 
-        $categorias->map(function ($item) {
-            $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
-            $item->productos = [];
-        });
 
-        return response()->json(['body' => $categorias]);
+            $categorias = ProductoCategoria::whereNotIn('id', [11, 12, 13])->get(['id,nombre,imagen']);
 
-    } catch(\Exepction $e) {
-        return response()->json(['error' => $e->getMessage()], 422);
-    }
+            $categorias->map(function ($item) {
+                $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
+            });
+
+            return response()->json(['body' => $categorias]);
+        } catch (\Exepction $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
     }
 
 
     function getProductosFavoritos(Request $request)
     {
 
-        try{
+        try {
 
-            $productos = Auth::user()->favorites()->selectRaw('idproductos as id,nombre,slug,categoria_id,imagen,descripcion,precionoche')->orderBy('fecha_creacion','DESC')->get();
+            $productos = Auth::user()->favorites()->selectRaw('idproductos as id,nombre,slug,categoria_id,imagen,descripcion,precionoche')->orderBy('fecha_creacion', 'DESC')->get();
             $productos->map(function ($producto) {
-                $producto->id = $producto->idproductos;
                 $producto->nombre_categoria = $producto->categoria->nombre;
                 $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
-                unset($producto->idproductos);
                 unset($producto->categoria);
             });
             return response()->json(['body' => $productos]);
-
-        } catch(\Exepction $e) {
+        } catch (\Exepction $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
     }
 
     function getProductosCart(Request $request)
     {
-     
-     try{
-        
-        $productos = Auth::user()->cart()->selectRaw('idproductos as id,nombre,slug,categoria_id,imagen,descripcion,precionoche')->orderBy('fecha_creacion','DESC')->get();
 
-        $productos->map(function ($producto) {
-            $producto->id = $producto->idproductos;
-            $producto->nombre_categoria = $producto->categoria->nombre;
-            $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
-            $producto->cantidad = $producto->pivot->cantidad;
-            unset($producto->categoria);
-        });
+        try {
+
+            $productos = Auth::user()->cart()->selectRaw('idproductos as id,nombre,slug,categoria_id,imagen,descripcion,precionoche')->orderBy('fecha_creacion', 'DESC')->get();
+
+            $productos->map(function ($producto) {
+                $producto->nombre_categoria = $producto->categoria->nombre;
+                $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
+                $producto->cantidad = $producto->pivot->cantidad;
+                unset($producto->categoria);
+            });
 
             return response()->json(['body' => $productos]);
-        } catch(\Exepction $e) {
+        } catch (\Exepction $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
     }

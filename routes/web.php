@@ -28,6 +28,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/productos/favoritos/toggle', 'ProductosController@toggleFavorito');
     $router->get('/productos/cart', 'ProductosController@getProductosCart');
     $router->get('/productos/cart/add', 'ProductosController@addCart');
+
+    $router->get('/productos/cart/empty', 'ProductosController@setEmptyCart');
     
 
     $router->get('/pedidos/', 'PedidosController@getPedidos');

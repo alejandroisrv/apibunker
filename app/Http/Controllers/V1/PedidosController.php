@@ -50,10 +50,9 @@ class PedidosController extends Controller
 
               $monto = 100;
 
+              $productos = $cliente->cart()->get();
 
-              $productos = Producto::;
-
-
+              //PLUCK ESPECIAL ID => CANTIDAD 
 
               $pedidos = Pedido::create([
                 'cliente_id' => $cliente->id ,
@@ -64,7 +63,7 @@ class PedidosController extends Controller
                 'monto' => $monto,
               ]);
 
-              $pedidos->productos()->sync();
+              $pedidos->productos()->sync($productos);
 
 
             return response()->json(['response' => 'ok']);
