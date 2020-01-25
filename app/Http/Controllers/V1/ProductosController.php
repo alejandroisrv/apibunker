@@ -74,7 +74,11 @@ class ProductosController extends Controller
         $producto = $request->producto;
 
         $user->cart()->detach($producto);
-        $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
+        
+        if($request->cantidad > 0){
+            $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
+        }
+        
 
         return response()->json(['response' => 'ok']);
     }
