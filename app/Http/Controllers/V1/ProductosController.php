@@ -141,6 +141,7 @@ class ProductosController extends Controller
         $productos = Auth::user()->cart()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->orderBy('fecha_creacion','DESC')->get();
 
         $productos->map(function ($producto) {
+            $producto->id = $producto->idproductos;
             $producto->nombre_categoria = $producto->categoria->nombre;
             $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
             $producto->cantidad = $producto->pivot->cantidad;
