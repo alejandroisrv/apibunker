@@ -74,7 +74,11 @@ class ProductosController extends Controller
         $producto = $request->producto;
 
         $user->cart()->detach($producto);
-        $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
+        
+        if($request->cantidad > 0){
+            $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
+        }
+        
 
         return response()->json(['response' => 'ok']);
     }
@@ -141,6 +145,7 @@ class ProductosController extends Controller
         $productos = Auth::user()->cart()->selectRaw('idproductos as id,nombre,slug,categoria_id,imagen,descripcion,precionoche')->orderBy('fecha_creacion','DESC')->get();
 
         $productos->map(function ($producto) {
+            $producto->id = $producto->idproductos;
             $producto->nombre_categoria = $producto->categoria->nombre;
             $producto->imagen = config('global.base_url') . 'assets/img/productos/' . $producto->imagen;
             $producto->cantidad = $producto->pivot->cantidad;
