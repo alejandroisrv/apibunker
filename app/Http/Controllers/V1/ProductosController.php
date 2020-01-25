@@ -73,9 +73,6 @@ class ProductosController extends Controller
 
         $producto = $request->producto;
 
-
-
-
         $user->cart()->detach($producto);
         $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
 
@@ -99,7 +96,7 @@ class ProductosController extends Controller
         try {
             
         
-        $categorias = ProductoCategoria::select('id', 'nombre', 'imagen')
+        $categorias = ProductoCategoria::selectRaw('id,nombre,imagen')
             ->whereNotIn('id', [11, 12, 13])
             ->get();
 
@@ -121,7 +118,7 @@ class ProductosController extends Controller
 
         try{
 
-            $productos = Auth::user()->favorites()->select('idproductos', 'nombre', 'slug', 'categoria_id', 'imagen', 'descripcion', 'precionoche')->orderBy('fecha_creacion','DESC')->get();
+            $productos = Auth::user()->favorites()->selectRaw('idproductos as id,nombre,slug,categoria_id,imagen,descripcion,precionoche')->orderBy('fecha_creacion','DESC')->get();
             $productos->map(function ($producto) {
                 $producto->id = $producto->idproductos;
                 $producto->nombre_categoria = $producto->categoria->nombre;
