@@ -108,7 +108,7 @@ class ProductosController extends Controller
         try {
 
 
-            $categorias = ProductoCategoria::whereNotIn('id', [11, 12, 13])->get(['id,nombre,imagen']);
+            $categorias = ProductoCategoria::selectRaw('id,nombre,imagen')->whereNotIn('id', [11, 12, 13])->get();
 
             $categorias->map(function ($item) {
                 $item->imagen = config('global.base_url') . 'assets/img/' . $item->imagen;
