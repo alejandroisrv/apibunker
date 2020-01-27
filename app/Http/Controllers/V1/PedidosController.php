@@ -75,8 +75,6 @@ class PedidosController extends Controller
             }
             
 
-            return response()->json(['response'],422);
-
             return response()->json(['response' => 'ok']);
 
         } catch (\Exception $e) {
