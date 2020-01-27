@@ -74,7 +74,12 @@ class ProductosController extends Controller
             return response()->json(['response' => 'ok']);
         }
 
-        if (!$user->cart()->where('id_producto', $producto)->update(['clientes_carrito.cantidad' => $request->cantidad])) {
+        $update = DB::table('clientes_carrito')
+                        ->where('id_producto', $producto)
+                        ->where('id_cliente',$user->id)
+                        ->update(['cantidad' => $request->cantidad]);
+
+        if (!$update) {
             $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
         }
 

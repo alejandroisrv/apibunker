@@ -73,7 +73,10 @@ class PedidosController extends Controller
                     'cantidad' => $producto->cantidad
                 ]);
             }
+
             
+            
+            $cliente->cart()->detach();
 
             return response()->json(['response' => 'ok']);
 
