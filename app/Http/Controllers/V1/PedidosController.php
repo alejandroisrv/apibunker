@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Notifications;
 use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,8 @@ class PedidosController extends Controller
         return response()->json($pedidos);
     }
 
-    function nuevoPedido(Request $request){
+    function nuevoPedido(Request $request)
+    {
 
         try {
 
@@ -52,19 +54,19 @@ class PedidosController extends Controller
             $monto = 100;
 
             $productos = DB::table('clientes_carrito')
-            ->selectRaw('id_producto as id,cantidad')
-            ->where('id_cliente',$cliente->id)
-            ->get();
-
-            //PLUCK ESPECIAL ID => CANTIDAD 
+                ->selectRaw('id_producto as id,cantidad')
+                ->where('id_cliente', $cliente->id)
+                ->get();
 
             $pedidos = Pedido::create([
-            'cliente_id' => $cliente->id ,
-            'direccion' => $data['direccion'],
-            'telefono' => $data['telefono'],
-            'tipo_pago' => $data['metodo_pago'] ,
-            'total' => $data['total'],
-            'observaciones' => $data['adicional'],
+                'cliente_id' => $cliente->id,
+                'direccion' => $data['direccion'],
+                'latitud' => $data['latitud'],
+                'longitud' => $data['longitud'],
+                'telefono' => $data['telefono'],
+                'tipo_pago' => $data['metodo_pago'],
+                'total' => $data['total'],
+                'observaciones' => $data['adicional'],
             ]);
 
             foreach ($productos as $producto) {
@@ -74,16 +76,18 @@ class PedidosController extends Controller
                 ]);
             }
 
-            
-            
+            Notifications::create([
+                'cliente_id' => $cliente->id,
+                'tipo' => 1,
+                'contenido' => "Su pedido ha sido recibido",
+            ]);
+
             $cliente->cart()->detach();
 
             return response()->json(['response' => 'ok']);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage() ],422);
+            return response()->json(['error' => $e->getMessage()], 422);
         }
-      
-
     }
 }

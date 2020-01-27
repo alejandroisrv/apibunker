@@ -15,6 +15,8 @@ class Pedido extends Model
     protected $fillable = [
         'cliente_id',
         'direccion',
+        'logitud',
+        'latitud',
         'referencia',
         'telefono',
         'tipo_pago',
