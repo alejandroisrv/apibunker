@@ -10,6 +10,7 @@ class PedidoProductos extends Model
 {
 
     protected $table = 'pedidos_productos';
+    public $timestamps = false;
 
     protected $fillable = [
         'pedido_id',

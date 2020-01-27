@@ -7,19 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pedido extends Model
 {
+
+    protected $table = "pedidos_app";
+    
+    public $timestamps = false;
+
     protected $fillable = [
         'cliente_id',
         'direccion',
         'referencia',
         'telefono',
-        'pago',
-        'monto',
-        'fecha',
-        'status',
-        'orden'
+        'tipo_pago',
+        'total',
+        'observaciones'
     ];
 
-    public function productos(){
+    			
+
+    public function productos(){       
         return $this->hasMany(PedidoProductos::class,'pedido_id');
     }
+
 }
