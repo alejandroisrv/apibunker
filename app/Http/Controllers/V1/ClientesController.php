@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Created by PhpStorm.
+ * User: EDWARD OSORIO
+ * Date: 30/09/2019
+ * Time: 4:40 PM
+ */
 
 namespace App\Http\Controllers\V1;
 
@@ -7,24 +13,75 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Notifications;
 use App\Models\Pedido;
-use App\Models\Producto;
-use Illuminate\Support\Facades\Auth;
+use App\User;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
-class PedidosController extends Controller
+class ClientesController extends Controller
 {
 
-    function getPedidos(Request $request)
+    public function __construct()
+    {
+        //
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $data['password'] = app('hash')->make($data['password']);
+        return User::create($data);
+    }
+
+
+    function getMyProfile(Request $request)
     {
 
-        $estado = $request->estado;
+        $user = Auth::user();
 
-        $pedidos = Pedido::when($request->estado, function ($q) use ($estado) {
-            return $q->where('status', $estado);
-        })
-            ->orderBy('fecha_creacion', 'DESC')
-            ->get();
+        return response()->json(['body' => $user]);
+    }
+
+    function updateUser(Request $request)
+    {
+
+        $user = Auth::user();
+
+        $data = $request->all();
+
+        try {
+
+            $user->nombre = $data['nombre'];
+            $user->direccion = $data['direccion'];
+            $user->telefono = $data['telefono'];
+
+            isset($data['password']) ? $user->password = app('hash')->make($data['password']) : $user->password;
+
+            $user->save();
+            return response()->json(['response' => 'ok']);
+        } catch (\Exception $th) {
+            //throw $th;
+        }
+    }
+
+    function setReadNotificaciones(Request $request)
+    {
+
+        $cliente_id = Auth::user()->id;
+        Notifications::where('cliente_id', $cliente_id)->update(['estado' => 1]);
+
+        return response()->json(['response' => 'ok']);
+    }
+
+    function getNotificaciones(Request $request)
+    {
+        
+        $cliente_id = Auth::user()->id;
+
+        $notificaciones = Notifications::where('cliente_id', $cliente_id)->orderBy('fecha_creacion', 'DESC')->get();
+
+        return response()->json(['body' => $notificaciones]);
     }
 
     function getMyPedidos(Request $request)
@@ -40,7 +97,7 @@ class PedidosController extends Controller
             ->orderBy('fecha_creacion', 'DESC')
             ->get();
 
-        return response()->json($pedidos);
+        return response()->json(['body' => $pedidos]);
     }
 
     function nuevoPedido(Request $request)
@@ -49,9 +106,8 @@ class PedidosController extends Controller
         try {
 
             $cliente = Auth::user();
-            $data = $request->all();
 
-            $monto = 100;
+            $data = $request->all();
 
             $productos = DB::table('clientes_carrito')
                 ->selectRaw('id_producto as id,cantidad')
@@ -85,7 +141,6 @@ class PedidosController extends Controller
             $cliente->cart()->detach();
 
             return response()->json(['response' => 'ok']);
-
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }

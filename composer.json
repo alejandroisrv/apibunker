@@ -9,6 +9,7 @@
         "guzzlehttp/guzzle": "~6.0",
         "illuminate/mail": "5.8.*",
         "laravel/lumen-framework": "5.8.*",
+        "pusher/pusher-php-server": "^4.1",
         "tymon/jwt-auth": "1.0.0.*@dev",
         "vluzrmos/lumen-cors": "2.1.*",
         "webpatser/laravel-uuid": "^3.0"

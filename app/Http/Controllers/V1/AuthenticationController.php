@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\V1;
 
 use App\Business\Util\Database;
@@ -131,18 +132,16 @@ class AuthenticationController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-
         try {
 
             DB::beginTransaction();
 
             $user = Cliente::create(
                 [
-                    'nombres' => $request->get('nombres'),
-                    'email' => $request->get('email'),
+                    'nombres' => $request->nombres,
+                    'email' => $request->email,
                     'password' =>  app('hash')->make($request->password),
-                    'revista' => $request->get('revista'),
-                    'areas_interes' => $request->get('areas_interes')
+                    'telefono' => $request->telefono,
                 ]
             );
 
@@ -157,8 +156,6 @@ class AuthenticationController extends Controller
             dispatch(new ClientActivationJob($user, $this->config));
 
             DB::commit();
-
-
 
             return response()->json(['response' => 'success']);
         } catch (\Exepction $e) {
