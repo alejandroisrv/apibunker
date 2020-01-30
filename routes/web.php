@@ -17,7 +17,7 @@ $router->get('/', function () use ($router) {
 
 
 $router->post('/login', 'AuthenticationController@login');
-$router->post('/auth/register', 'AuthenticationController@register');
+$router->post('/registro', 'AuthenticationController@register');
 
 //GET DATA
 $router->group(['middleware' => 'auth'], function () use ($router) {
