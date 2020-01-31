@@ -91,7 +91,7 @@ class AuthenticationController extends Controller
 
         if (!$token) {
             return response()->json(['error' => true, 'mensaje' => 'No existe']);
-        }º
+        }
 
         $user = Cliente::where("email", $token->email)->first();
 
