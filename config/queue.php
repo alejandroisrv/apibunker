@@ -36,7 +36,7 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'table' => 'siip_tareas',
+            'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,
         ],
@@ -81,7 +81,7 @@ return [
 
     'failed' => [
         'database' => env('DB_CONNECTION', 'mysql'),
-        'table' => 'siip_tareas_fallidas',
+        'table' => 'jobs_fail',
     ],
 
 ];
