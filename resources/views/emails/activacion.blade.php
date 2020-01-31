@@ -15,7 +15,7 @@
         </table>
         <table width="600" align="center" cellpadding="10" cellspacing="0" bgcolor="{{ $config['subtitle_bgcolor'] }}">
             <tr>
-                <td><div style="font-family: sans-serif; font-size:16px; color: #ffffff">Comprometidos con tu desarrollo y éxito profesional</div></td>
+                <td><div style="font-family: sans-serif; font-size:16px; color: #ffffff">Delivery todos las noches hasta las 4 a.m</div></td>
             </tr>
         </table>
         <table width="600" align="center" cellpadding="20" cellspacing="0" bgcolor="#ffffff">
@@ -26,7 +26,7 @@
                             <td>
                                 <p style="font-family: sans-serif; font-size:16px; font-weight: bold ">Activación de cuenta</p>
                                 <p style="font-family: sans-serif; font-size:14px;"> <b> ¡Gracias por registrarte! </b>
-                                    Cuando actives tu cuenta podrás disfrutar de nuestros servicios.</p>
+                                    Cuando actives tu cuenta podrás disfrutar de nuestros productos.</p>
                                     <br>
                                 <div>
                                     <a href="{{ $config['activate'] }}" style="font-family: sans-serif; font-size:14px; background-color: #035175; padding: 8px 10px;color: #ffffff; text-decoration: none;">Activar cuenta</a></div> 

@@ -165,16 +165,16 @@ class AuthenticationController extends Controller
     public function setConfig($token = "")
     {
         $this->config = [
-            'header_bgcolor' => '#2E79BE',
+            'header_bgcolor' => '#fff',
             'body_bgcolor' => '#eeeeee',
-            'activate' => config('global.base_url') . 'activar/' . $token,
+            'activate' =>   'https://activacion.elbunker.pe/?token=' . $token,
             'recover' => config('global.base_url') . 'recuperar/' . $token,
-            'logo' => config('global.base_url'),
+            'logo' => config('global.base_url').'assets/img/logo-rojo.png',
             'www' => 'www.elbunker.pe',
-            'copyright' => 'Todos los derechos reservados. El bunker 2018',
+            'copyright' => 'Todos los derechos reservados. El bunker 2020',
             'revista_ip' => 'El bunker',
-            'footer_bgcolor' => '#2E79BE',
-            'subtitle_bgcolor' => '#254085'
+            'footer_bgcolor' => '#ed1c24',
+            'subtitle_bgcolor' => '#b31218'
         ];
     }
 }
