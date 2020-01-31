@@ -68,9 +68,9 @@ class AuthenticationController extends Controller
             $user = Cliente::where('email', $request->email)->first();
 
             if ($user) {
-                // if ($user->verificado === null) {
-                //     return response()->json(['error' => 'Es necesario que actives tu correo electronico para poder iniciar sesión en tu cuenta'], 422);
-                // }
+                if ($user->verificado === null) {
+                    return response()->json(['error' => 'Es necesario que actives tu correo electronico para poder iniciar sesión en tu cuenta'], 422);
+                }
             }
 
             $credentials = $request->only('email', 'password');
@@ -174,7 +174,7 @@ class AuthenticationController extends Controller
             'copyright' => 'Todos los derechos reservados. El bunker 2020',
             'revista_ip' => 'El bunker',
             'footer_bgcolor' => '#ed1c24',
-            'subtitle_bgcolor' => '#b31218'
+            'subtitle_bgcolor' => '#ed1c24'
         ];
     }
 }

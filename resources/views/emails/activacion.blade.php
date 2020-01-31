@@ -29,7 +29,7 @@
                                     Cuando actives tu cuenta podrás disfrutar de nuestros productos.</p>
                                     <br>
                                 <div>
-                                    <a href="{{ $config['activate'] }}" style="font-family: sans-serif; font-size:14px; background-color: #035175; padding: 8px 10px;color: #ffffff; text-decoration: none;">Activar cuenta</a></div> 
+                                    <a href="{{ $config['activate'] }}" style="font-family: sans-serif; font-size:14px; background-color: #b31218; padding: 8px 10px;color: #ffffff; text-decoration: none;">Activar cuenta</a></div> 
                                     <br>
                                 </div>
                             </td>

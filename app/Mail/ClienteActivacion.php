@@ -23,7 +23,7 @@ class ClienteActivacion extends Mailable {
      * @return $this
      */
     public function build(){
-        return $this->from('info@elbunker.pe', 'El Bunker' )
+        return $this->from('pedidos@elbunker.com', 'El Bunker' )
                 ->subject('Activación de cuenta')
                 ->view('emails.activacion');
     }
