@@ -87,7 +87,7 @@ class AuthenticationController extends Controller
 
     public function activate(Request $request)
     {
-        $token = Activacion::where('token', $request->get('token'))->first();
+        $token = Activacion::where('token', $request->token)->first();
 
         if (!$token) {
             return response()->json(['error' => true, 'mensaje' => 'No existe']);
@@ -110,7 +110,6 @@ class AuthenticationController extends Controller
 
     public function register(Request $request)
     {
-
 
         $validator = Validator::make($request->all(), [
             'nombres' => 'bail|required',
