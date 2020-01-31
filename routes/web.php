@@ -37,7 +37,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     
     $router->post('/pedidos/nuevo', 'ClientesController@nuevoPedido');
 
-    $router->get('/clientes/pedidos/', 'ClientesController@getPedidos');
+    $router->get('/clientes/pedidos', 'ClientesController@getMyPedidos');
     $router->get('/clientes/profile','ClientesController@getMyProfile');
     $router->post('/clientes/profile/update', 'ClientesController@updateclientes');
     $router->get('/clientes/notificaciones','ClientesController@getNotificaciones');
