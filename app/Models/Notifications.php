@@ -10,6 +10,7 @@ class Notifications extends Model
     protected $fillable = [
         'cliente_id',
         'tipo',
+        'titulo',
         'contenido',
         'estado',
         'fecha_creacion'
