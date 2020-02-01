@@ -21,7 +21,8 @@ class Pedido extends Model
         'telefono',
         'tipo_pago',
         'total',
-        'observaciones'
+        'observaciones',
+        'fecha_creacion'
     ];
 
     			

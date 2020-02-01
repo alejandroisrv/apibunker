@@ -12,6 +12,7 @@ class Notifications extends Model
         'tipo',
         'contenido',
         'estado',
+        'fecha_creacion'
     ];
     
     public $timestamps = false;

@@ -123,6 +123,7 @@ class ClientesController extends Controller
                 'tipo_pago' => $data['metodo_pago'],
                 'total' => $data['total'],
                 'observaciones' => $data['adicional'],
+                'fecha_creacion' => date('d/m/yy h:i:s'),
             ]);
 
             foreach ($productos as $producto) {
@@ -136,6 +137,7 @@ class ClientesController extends Controller
                 'cliente_id' => $cliente->id,
                 'tipo' => 1,
                 'contenido' => "Su pedido ha sido recibido",
+                'fecha_creacion' => date('d/m/yy h:i:s'),
             ]);
 
             $cliente->cart()->detach();
