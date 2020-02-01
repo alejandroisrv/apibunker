@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Notifications;
 use App\Models\Pedido;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -78,11 +79,40 @@ class ClientesController extends Controller
     function getNotificaciones(Request $request)
     {
 
+        $date = Carbon::now();
+
+        
+
+   
+
         $cliente_id = Auth::user()->id;
+
+        $notis = collect();
 
         $notificaciones = Notifications::where('cliente_id', $cliente_id)->orderBy('fecha_creacion', 'DESC')->get();
 
-        return response()->json(['body' => $notificaciones]);
+        $NotiHoy = [
+            'label' => 'Hoy',
+            'notificaciones' => []
+        ];
+
+        $NotiOtros = [
+            'label' => 'Otras notificaciones',
+            'notificaciones' => []
+        ];
+    
+        $notificaciones->map(function($noti) use(&$NotiHoy,&$NotiOtros) {
+            $fecha = Carbon::create($noti->fecha_creacion)->format('d/m/yy');
+            $hoy = Carbon::now()->format('d/m/yy');
+            $hoy == $fecha ? $NotiHoy['notificaciones'][] = $noti : $NotiOtros['notificaciones'][] = $noti;
+        });
+
+        $notis = [
+            $NotiHoy,
+            $NotiOtros
+        ];
+
+        return response()->json(['body' => $notis]);
     }
 
     function getMyPedidos(Request $request)
@@ -124,7 +154,7 @@ class ClientesController extends Controller
                 'tipo_pago' => $data['metodo_pago'],
                 'total' => $data['total'],
                 'observaciones' => @$data['adicional'],
-                'fecha_creacion' => date('d/m/yy h:i:s'),
+                'fecha_creacion' => date('yy/m/d h:i:s'),
             ]);
 
             foreach ($productos as $producto) {
@@ -137,8 +167,9 @@ class ClientesController extends Controller
             Notifications::create([
                 'cliente_id' => $cliente->id,
                 'tipo' => 1,
-                'contenido' => "Su pedido ha sido recibido",
-                'fecha_creacion' => date('d/m/yy h:i:s'),
+                'titulo' => 'Su pedido ha sido recibido',
+                'contenido' => "En 40 minutos aproximadamente recibirás tu pedido",
+                'fecha_creacion' => date('yy/m/d h:i:s'),
             ]);
 
             $cliente->cart()->detach();
