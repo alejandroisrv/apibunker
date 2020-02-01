@@ -102,8 +102,12 @@ class ClientesController extends Controller
         ];
     
         $notificaciones->map(function($noti) use(&$NotiHoy,&$NotiOtros) {
-            $fecha = Carbon::create($noti->fecha_creacion)->format('d/m/yy');
+            $fecha_creacion = Carbon::create($noti->fecha_creacion);
+            $fecha = $fecha_creacion->format('d/m/yy');
             $hoy = Carbon::now()->format('d/m/yy');
+            
+            $noti->fecha_creacion = $hoy == $fecha ? "Hoy a las " . $fecha_creacion->format('H:i') : $fecha_creacion->format('d/m/y h:i:s') ;
+
             $hoy == $fecha ? $NotiHoy['notificaciones'][] = $noti : $NotiOtros['notificaciones'][] = $noti;
         });
 
