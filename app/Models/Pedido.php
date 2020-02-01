@@ -31,4 +31,5 @@ class Pedido extends Model
         return $this->hasMany(PedidoProductos::class,'pedido_id');
     }
 
+
 }

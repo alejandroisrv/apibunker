@@ -17,6 +17,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class ClientesController extends Controller
@@ -76,7 +77,7 @@ class ClientesController extends Controller
 
     function getNotificaciones(Request $request)
     {
-        
+
         $cliente_id = Auth::user()->id;
 
         $notificaciones = Notifications::where('cliente_id', $cliente_id)->orderBy('fecha_creacion', 'DESC')->get();
@@ -87,10 +88,10 @@ class ClientesController extends Controller
     function getMyPedidos(Request $request)
     {
 
-        $cliente_id = Auth::user()->id;
+        $cliente= Auth::user();
         $estado = $request->estado;
 
-        $pedidos = Pedido::where('cliente_id', $cliente_id)
+        $pedidos = $cliente->pedidos()
             ->when($request->estado, function ($q) use ($estado) {
                 return $q->where('status', $estado);
             })
@@ -117,12 +118,12 @@ class ClientesController extends Controller
             $pedidos = Pedido::create([
                 'cliente_id' => $cliente->id,
                 'direccion' => $data['direccion'],
-                'latitud' => $data['latitud'],
-                'longitud' => $data['longitud'],
+                'latitud' => @$data['latitud'],
+                'longitud' => @$data['longitud'],
                 'telefono' => $data['telefono'],
                 'tipo_pago' => $data['metodo_pago'],
                 'total' => $data['total'],
-                'observaciones' => $data['adicional'],
+                'observaciones' => @$data['adicional'],
                 'fecha_creacion' => date('d/m/yy h:i:s'),
             ]);
 
