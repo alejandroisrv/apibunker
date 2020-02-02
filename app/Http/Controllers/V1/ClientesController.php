@@ -42,7 +42,7 @@ class ClientesController extends Controller
 
         $user = Auth::user();
 
-        return response()->json(['body' => $user]);
+        return response()->json($user);
     }
 
     function updateUser(Request $request)
