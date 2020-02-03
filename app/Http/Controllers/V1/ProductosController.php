@@ -51,8 +51,6 @@ class ProductosController extends Controller
 
     function toggleFavorito(Request $request)
     {
-
-
         $user = Auth::user();
 
         $producto = $request->producto;
@@ -75,9 +73,9 @@ class ProductosController extends Controller
         }
 
         $update = DB::table('clientes_carrito')
-                        ->where('id_producto', $producto)
-                        ->where('id_cliente',$user->id)
-                        ->update(['cantidad' => $request->cantidad]);
+            ->where('id_producto', $producto)
+            ->where('id_cliente', $user->id)
+            ->update(['cantidad' => $request->cantidad]);
 
         if (!$update) {
             $user->cart()->attach($producto, ['cantidad' => $request->cantidad]);
@@ -90,7 +88,7 @@ class ProductosController extends Controller
     {
 
         $user = Auth::user();
-        
+
         $user->cart()->detach();
 
         return response()->json(['response' => 'ok']);
@@ -111,7 +109,6 @@ class ProductosController extends Controller
     function getCategorias(Request $request)
     {
         try {
-
 
             $categorias = ProductoCategoria::selectRaw('id,nombre,imagen')->whereNotIn('id', [11, 12, 13])->get();
 

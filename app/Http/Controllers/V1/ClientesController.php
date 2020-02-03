@@ -81,48 +81,46 @@ class ClientesController extends Controller
 
         $date = Carbon::now();
 
-        
-
-   
-
         $cliente_id = Auth::user()->id;
 
-        $notis = collect();
+        $notificaciones = Notifications::where('cliente_id', $cliente_id)->orderBy('fecha_creacion', 'DESC');
 
-        $notificaciones = Notifications::where('cliente_id', $cliente_id)->orderBy('fecha_creacion', 'DESC')->get();
+        $now = Carbon::now();
 
         $NotiHoy = [
             'label' => 'Hoy',
+            'unread' => $notificaciones->whereDate('fecha_creacion', $now->format('yy/m/d'))->count(),
             'notificaciones' => []
         ];
 
         $NotiOtros = [
             'label' => 'Otras notificaciones',
+            'unread' => $notificaciones->whereDate('fecha_creacion', '!=', $now->format('yy/m/d'))->count(),
             'notificaciones' => []
         ];
-    
-        $notificaciones->map(function($noti) use(&$NotiHoy,&$NotiOtros) {
-            $fecha_creacion = Carbon::create($noti->fecha_creacion);
-            $fecha = $fecha_creacion->format('d/m/yy');
-            $hoy = Carbon::now()->format('d/m/yy');
-            
-            $noti->fecha_creacion = $hoy == $fecha ? "Hoy a las " . $fecha_creacion->format('H:i') : $fecha_creacion->format('d/m/y h:i:s') ;
 
-            $hoy == $fecha ? $NotiHoy['notificaciones'][] = $noti : $NotiOtros['notificaciones'][] = $noti;
-        });
+        $total = $NotiOtros['unread'] + $NotiHoy['unread'];
+
+        $hoy = $now->format('d/m/yy');
+
+        foreach ($notificaciones as $noti) {
+            $fecha_creacion = Carbon::create($noti->fecha_creacion);
+            $noti->fecha_creacion = ($hoy == $fecha_creacion->format('d/m/yy')) ? "Hoy a las " . $fecha_creacion->format('H:i') : $fecha_creacion->format('d/m/y h:i:s');
+            $hoy == $fecha_creacion->format('d/m/yy') ? $NotiHoy['notificaciones'][] = $noti : $NotiOtros['notificaciones'][] = $noti;
+        }
 
         $notis = [
             $NotiHoy,
             $NotiOtros
         ];
 
-        return response()->json(['body' => $notis]);
+        return response()->json(['body' => count($total) > 0 ? $notis : []]);
     }
 
     function getMyPedidos(Request $request)
     {
 
-        $cliente= Auth::user();
+        $cliente = Auth::user();
         $estado = $request->estado;
 
         $pedidos = $cliente->pedidos()
