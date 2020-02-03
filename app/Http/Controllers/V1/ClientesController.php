@@ -142,12 +142,15 @@ class ClientesController extends Controller
 
             $data = $request->all();
 
+            $codigo = ucwords(str_random(8));
+
             $productos = DB::table('clientes_carrito')
                 ->selectRaw('id_producto as id,cantidad')
                 ->where('id_cliente', $cliente->id)
                 ->get();
 
-            $pedidos = Pedido::create([
+            $pedido = Pedido::create([
+                'codigo' => $codigo,
                 'cliente_id' => $cliente->id,
                 'direccion' => $data['direccion'],
                 'latitud' => @$data['latitud'],
@@ -160,7 +163,7 @@ class ClientesController extends Controller
             ]);
 
             foreach ($productos as $producto) {
-                $pedidos->productos()->create([
+                $pedido->productos()->create([
                     'producto_id' => $producto->id,
                     'cantidad' => $producto->cantidad
                 ]);
@@ -169,6 +172,7 @@ class ClientesController extends Controller
             Notifications::create([
                 'cliente_id' => $cliente->id,
                 'tipo' => 1,
+                'pedido_id' => $pedido->id,
                 'titulo' => 'Su pedido ha sido recibido',
                 'contenido' => "En 40 minutos aproximadamente recibirás tu pedido",
                 'fecha_creacion' => date('yy/m/d h:i:s'),
