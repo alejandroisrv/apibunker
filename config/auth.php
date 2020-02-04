@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'api'),
+        'guard' => env('AUTH_GUARD', 'usuarios'),
     ],
 
     /*
@@ -35,7 +35,15 @@ return [
     */
 
     'guards' => [
-        'api' => ['provider' => 'jwt', 'driver' => 'jwt'],
+
+        'clientes' => [
+            'driver' => 'jwt',
+            'provider' => 'clientes',
+        ],
+        'usuarios' => [
+            'driver' => 'jwt',
+            'provider' => 'usuarios',
+        ],
     ],
 
     /*
@@ -56,7 +64,14 @@ return [
     */
 
     'providers' => [
-        'jwt' => ['driver' => 'eloquent', 'model' => App\Models\Cliente::class]
+        'clientes' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Cliente::class
+        ],
+        'usuarios' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class
+        ]
     ],
 
     /*

@@ -42,7 +42,7 @@ class PedidosController extends Controller
         $mensaje = $estado == 1 ? 'Tu pedido esta en camino' : 'Tu pedido ha sido entregado';
 
         Notifications::create([
-            'cliente_id' => $pedido->cliente->id,
+            'cliente_id' => $pedido->cliente_id,
             'tipo' => 2,
             'contenido' => $mensaje,
         ]);

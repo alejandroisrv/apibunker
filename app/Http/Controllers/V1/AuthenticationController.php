@@ -75,7 +75,7 @@ class AuthenticationController extends Controller
 
             $credentials = $request->only('email', 'password');
 
-            if (!$token = $this->auth->attempt($credentials)) {
+            if (!$token = $this->auth->guard('clientes')->attempt($credentials)) {
                 return response()->json(['error' => 'Los datos que has introducido son incorrectos'], 403);
             }
 

@@ -21,7 +21,7 @@ $router->post('/registro', 'AuthenticationController@register');
 $router->get('/activar-cuenta', 'AuthenticationController@activate');
 
 //GET DATA
-$router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'auth:usuarios'], function () use ($router) {
 
     $router->get('/producto/{slug}', 'ProductosController@getProducto');
     $router->get('/productos', 'ProductosController@getProductos');
