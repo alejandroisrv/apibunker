@@ -1,12 +1,12 @@
 <template>
-  <CSidebar 
-    fixed 
+  <CSidebar
+    fixed
     :minimize="minimize"
     :show.sync="show"
   >
-    <CSidebarBrand 
-      :imgFull="{ width: 118, height: 46, alt: 'Logo', src: 'img/brand/coreui-base-white.svg'}"
-      :imgMinimized="{ width: 118, height: 46, alt: 'Logo', src: 'img/brand/coreui-signet-white.svg'}"
+    <CSidebarBrand
+      :imgFull="{ width: 130, height: 30, alt: 'Logo', src: 'http://api.donjuerguero.com/assets/img/logon.png'}"
+      :imgMinimized="{ width: 118, height: 46, alt: 'Logo', src: 'http://api.donjuerguero.com/assets/img/logon.png'}"
       :wrappedInLink="{ href: 'https://coreui.io/', target: '_blank'}"
     />
     <CRenderFunction flat :content-to-render="nav"/>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import nav from './_nav'
+import nav from './_nav2'
 
 export default {
   name: 'TheSidebar',

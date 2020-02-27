@@ -11,14 +11,14 @@
       v-c-emit-root-event:toggle-sidebar
     />
     <CHeaderBrand
-      class="mx-auto d-lg-none" 
+      class="mx-auto d-lg-none"
       src="img/brand/coreui-vue-logo.svg"
       width="190"
       height="46"
       alt="CoreUI Logo"
     />
-    <CHeaderNav class="d-md-down-none mr-auto">
-      <CHeaderNavItem class="px-3">
+    <!-- <CHeaderNav class="d-md-down-none mr-auto"> -->
+      <!-- <CHeaderNavItem class="px-3">
         <CHeaderNavLink to="/dashboard">
           Dashboard
         </CHeaderNavLink>
@@ -27,23 +27,14 @@
         <CHeaderNavLink to="/users" exact>
           Users
         </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
+      </CHeaderNavItem> -->
+      <!-- <CHeaderNavItem class="px-3">
         <CHeaderNavLink>
           Settings
         </CHeaderNavLink>
       </CHeaderNavItem>
-    </CHeaderNav>
-    <CHeaderNav class="mr-4">
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-bell"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-list"/>
-        </CHeaderNavLink>
+    </CHeaderNav> -->
+    <CHeaderNav class="ml-auto">
       </CHeaderNavItem>
       <CHeaderNavItem class="d-md-down-none mx-2">
         <CHeaderNavLink>

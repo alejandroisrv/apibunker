@@ -14,19 +14,13 @@ export default [
       },
       {
         _name: 'CSidebarNavTitle',
-        _children: ['Theme']
+        _children: ['Pedidos']
       },
       {
         _name: 'CSidebarNavItem',
-        name: 'Colors',
+        name: 'Pedidos',
         to: '/theme/colors',
         icon: 'cil-drop'
-      },
-      {
-        _name: 'CSidebarNavItem',
-        name: 'Typography',
-        to: '/theme/typography',
-        icon: 'cil-pencil'
       },
       {
         _name: 'CSidebarNavTitle',
@@ -52,7 +46,7 @@ export default [
             name: 'Carousels',
             to: '/base/carousels',
             icon: 'cil-puzzle'
-          }, 
+          },
           {
             name: 'Collapses',
             to: '/base/collapses',

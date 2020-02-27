@@ -1,61 +1,76 @@
 <template>
   <CContainer class="d-flex align-items-center min-vh-100">
     <CRow class="justify-content-center">
-      <CCol md="8">
-        <CCardGroup>
+      <CCol md="12">
           <CCard class="p-4">
             <CCardBody>
               <CForm>
-                <h1>Login</h1>
-                <p class="text-muted">Sign In to your account</p>
-                <CInput
-                  placeholder="Username"
-                  autocomplete="username email"
-                >
+                <h1 class="my-1">Inicia sesión</h1>
+                <p class="text-danger" style="text-align:center;font-weight:600;">{{ error }}</p>
+                <CInput placeholder="Username" autocomplete="username email" v-model="credenciales.usuario">
                   <template #prepend-content><CIcon name="cil-user"/></template>
                 </CInput>
-                <CInput
-                  placeholder="Password"
-                  type="password"
-                  autocomplete="curent-password"
-                >
+                <CInput placeholder="Password" type="password" autocomplete="curent-password" v-model="credenciales.password">
                   <template #prepend-content><CIcon name="cil-lock-locked"/></template>
                 </CInput>
                 <CRow>
-                  <CCol col="6">
-                    <CButton color="primary" class="px-4">Login</CButton>
-                  </CCol>
-                  <CCol col="6" class="text-right">
-                    <CButton color="link" class="px-0">Forgot password?</CButton>
+                  <CCol col="12">
+                    <CButton color="primary" class="px-4" @click="login">Login</CButton>
                   </CCol>
                 </CRow>
               </CForm>
             </CCardBody>
           </CCard>
-          <CCard
-            color="primary"
-            text-color="white"
-            class="text-center py-5 d-md-down-none"
-            style="width:44%"
-            body-wrapper
-          >
-            <h2>Sign up</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            <CButton
-              color="primary"
-              class="active mt-3"
-            >
-              Register Now!
-            </CButton>
-          </CCard>
-        </CCardGroup>
       </CCol>
     </CRow>
   </CContainer>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-  name: 'Login'
+  name: 'Login',
+  data(){
+    return {
+        credenciales:{
+            usuario:'',
+            password:''
+        },
+        validations:{
+            password:false,
+            usuario:false,
+        },
+        error:''
+      }
+  },
+  methods:{
+      login(){
+          if(this.validationEmail() && this.validationPassword()){
+              axios.post('http://localhost:8001/admin/login',this.credenciales).then(rs=>{
+                  if(rs.data.success){
+                      console.log(rs.data);
+                      localStorage.setItem('auth', JSON.stringify(rs.data));
+                      window.location.href="/pedidos";
+                  }else {
+                      this.error = rs.data.error;
+                  }
+              })
+          }
+      },
+      validationEmail(){
+          if(this.credenciales.usuario == ''){
+              this.validations.usuario = true;
+              return false;
+          }
+          return true;
+      },
+      validationPassword(){
+          if(this.credenciales.password == ''){
+              this.validations.password = true;
+              return false;
+          }
+          return true;
+      }
+    }
 }
 </script>
