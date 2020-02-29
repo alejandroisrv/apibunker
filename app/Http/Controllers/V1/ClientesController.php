@@ -11,8 +11,8 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Http\Controllers\Controller;
-use App\Models\Notifications;
-use App\Models\Pedido;
+use App\Models\Api\Notifications;
+use App\Models\Api\Pedido;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -99,8 +99,8 @@ class ClientesController extends Controller
             'notificaciones' => []
         ];
 
-        $total = $NotiOtros['unread'] + $NotiHoy['unread'];
 
+        $total = $NotiOtros['unread'] + $NotiHoy['unread'];
         $hoy = $now->format('d/m/yy');
 
         foreach ($notificaciones as $noti) {
