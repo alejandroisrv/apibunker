@@ -31,7 +31,7 @@ class Producto extends Model
         'vistas'
     ];
 
-    // public $appends = ['favorite'];
+    public $appends = ['favorite'];
 
     public function categoria()
     {
