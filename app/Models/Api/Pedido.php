@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Models;
+namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +9,7 @@ class Pedido extends Model
 {
 
     protected $table = "pedidos_app";
-    
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -25,10 +25,12 @@ class Pedido extends Model
         'fecha_creacion'
     ];
 
-    			
-
-    public function productos(){       
+    public function productos(){
         return $this->hasMany(PedidoProductos::class,'pedido_id');
+    }
+
+    public function cliente(){
+        return $this->belongsTo(Cliente::class,'cliente_id');
     }
 
 

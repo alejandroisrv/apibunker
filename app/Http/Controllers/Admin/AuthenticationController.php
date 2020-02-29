@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\Admin;
 
 use App\Business\Util\Database;
 use App\Http\Controllers\Controller;
 use App\Jobs\ClientActivationJob;
 use App\Models\Api\Activacion;
-use App\Models\Api\Cliente;
+use App\Models\Admin\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as IlluminateResponse;
 use Illuminate\Support\Facades\DB;
@@ -66,17 +66,11 @@ class AuthenticationController extends Controller
     {
         try {
 
-            $user = Cliente::where('email', $request->email)->first();
+            $user = User::where('usuario', $request->usuario)->first();
 
-            if ($user) {
-                if ($user->verificado === null) {
-                    return response()->json(['error' => 'Es necesario que actives tu correo electronico para poder iniciar sesión en tu cuenta'], 422);
-                }
-            }
+            $credentials = $request->only('usuario', 'password');
 
-            $credentials = $request->only('email', 'password');
-
-            if (!$token = Auth::guard('clientes')->attempt($credentials)) {
+            if (!$token = Auth::guard('usuarios')->attempt($credentials)) {
                 return response()->json(['error' => 'Los datos que has introducido son incorrectos'], 403);
             }
 
@@ -86,39 +80,16 @@ class AuthenticationController extends Controller
         }
     }
 
-    public function activate(Request $request)
-    {
-        $token = Activacion::where('token', $request->token)->first();
-
-        if (!$token) {
-            return response()->json(['error' => true, 'mensaje' => 'No existe']);
-        }
-
-        $user = Cliente::where("email", $token->email)->first();
-
-        if (!$user) {
-            return response()->json(['error' => true, 'mensaje' => 'No existe']);
-        }
-
-        $user->verificado = date('Y-m-d H:i:s');
-
-        $user->save();
-
-        $token->delete();
-
-        return response()->json(['error' => false, 'mensaje' => 'Su cuenta se ha activado con exito!']);
-    }
-
-    public function register(Request $request)
+    public function createUser(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
-            'nombres' => 'bail|required',
+            'nombre' => 'bail|required',
             'email' => 'bail|required|email|unique:clientes',
             'password' => 'bail|required|min:6',
             'password_confirmation' => 'bail|required|same:password'
         ], [
-            'nombres.required' => 'Debe ingresar el nombre',
+            'nombre.required' => 'Debe ingresar el nombre',
             'email.required' => 'Debe ingresar el correo electronico',
             'email.email' => 'Debe ingresar un correo electronico valido',
             'email.unique' => 'El correo ingresado ya se encuentra registrado',
@@ -136,24 +107,14 @@ class AuthenticationController extends Controller
 
             DB::beginTransaction();
 
-            $user = Cliente::create(
+            $user = User::create(
                 [
-                    'nombres' => $request->nombres,
+                    'nombre' => $request->nombres,
                     'email' => $request->email,
+                    'usuario'=> $request->usuario,
                     'password' =>  app('hash')->make($request->password),
-                    'telefono' => $request->telefono,
                 ]
             );
-
-            $activacion = Activacion::create([
-                'email' => $user->email,
-                'token' => Str::random(50),
-                'fecha_creacion' => date('Y-m-d H:i:s')
-            ]);
-
-            $this->setConfig($activacion->token);
-
-            dispatch(new ClientActivationJob($user, $this->config));
 
             DB::commit();
 

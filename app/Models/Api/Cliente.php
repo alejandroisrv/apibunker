@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Api;
 
 use App\Traits\Uuids;
 use Illuminate\Auth\Authenticatable;
@@ -15,6 +15,8 @@ class Cliente extends Model implements AuthenticatableContract, AuthorizableCont
     use Authenticatable, Authorizable,Uuids;
 
     protected $table = "clientes";
+
+    protected $guard = 'clientes';
 
     public $incrementing = false;
 

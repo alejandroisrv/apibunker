@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'usuarios'),
+        'guard' => env('AUTH_GUARD', 'clientes'),
     ],
 
     /*
@@ -66,11 +66,11 @@ return [
     'providers' => [
         'clientes' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Cliente::class
+            'model' => App\Models\Api\Cliente::class
         ],
         'usuarios' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class
+            'model' => App\Models\Admin\User::class
         ]
     ],
 

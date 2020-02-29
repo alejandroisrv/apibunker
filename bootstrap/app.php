@@ -62,7 +62,8 @@ $app->middleware([
 ]);
 
 $app->routeMiddleware([
-    'auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+    // 'auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+    'auth' => App\Http\Middleware\Authenticate::class,
 ]);
 
 $app->alias('mailer', Illuminate\Mail\Mailer::class);
@@ -104,6 +105,13 @@ $app->router->group([
     'namespace' => 'App\Http\Controllers\V1',
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
+});
+
+$app->router->group([
+    'namespace' => 'App\Http\Controllers\Admin',
+    'prefix' => 'admin'
+], function ($router) {
+    require __DIR__.'/../routes/admin.php';
 });
 
 return $app;

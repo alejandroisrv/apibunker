@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Models;
+namespace App\Models\Admin;
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +15,6 @@ class Producto extends Model
     public $timestamps = false;
 
     protected $primaryKey = 'idproductos';
-
 
     protected $fillable = [
         'nombre',
@@ -32,21 +31,8 @@ class Producto extends Model
         'vistas'
     ];
 
-    public $appends = ['favorite'];
-
     public function categoria()
     {
         return $this->belongsTo(ProductoCategoria::class, 'categoria_id');
-    }
-
-
-    public function getFavoriteAttribute()
-    {
-
-        $user = Auth::user();
-        
-        $exists = DB::table('clientes_favoritos')->where('id_producto', $this->id)->where('id_cliente', $user->id)->exists();
-            
-        return  $exists;
     }
 }

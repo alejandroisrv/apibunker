@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
 use App\Models\Notifications;
-use App\Models\Pedido;
-use App\Models\Producto;
+use App\Models\Admin\Pedido;
+use App\Models\Admin\Producto;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use DB;
@@ -20,15 +20,15 @@ class PedidosController extends Controller
 
         $estado = $request->estado;
 
-        $pedidos = Pedido::when($request->estado, function ($q) use ($estado) {
+        $pedidos = Pedido::with(['cliente','productos.producto'])
+        ->when($request->estado, function ($q) use ($estado) {
             return $q->where('status', $estado);
         })
-            ->orderBy('fecha_creacion', 'DESC')
-            ->get();
+        ->orderBy('fecha_creacion', 'DESC')
+        ->get();
 
         return response()->json($pedidos);
     }
-
 
     function changeStatePedido(Request $request, $pedido)
     {
@@ -37,7 +37,9 @@ class PedidosController extends Controller
 
         $pedido = Pedido::find($pedido);
 
-        $pedido->update(['estado' => $estado]);
+        $pedido->estado = $estado;
+
+        $pedido->save();
 
         $mensaje = $estado == 1 ? 'Tu pedido esta en camino' : 'Tu pedido ha sido entregado';
 

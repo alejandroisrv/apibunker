@@ -4,8 +4,8 @@ namespace App\Http\Controllers\V1;
 
 
 use App\Http\Controllers\Controller;
-use App\Models\Producto;
-use App\Models\ProductoCategoria;
+use App\Models\Api\Producto;
+use App\Models\Api\ProductoCategoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

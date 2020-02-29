@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
 
+use App\Traits\Uuids;
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
-    use Authenticatable, Authorizable;
+    use Authenticatable, Authorizable,Uuids;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +21,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
 
     public $table = "usuarios";
+
+    protected $guard = 'usuarios';
+
     protected $fillable = [
         'nombre','usuario' ,'email', 'password',
     ];

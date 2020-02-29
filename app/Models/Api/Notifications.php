@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Models;
+namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +15,7 @@ class Notifications extends Model
         'estado',
         'fecha_creacion'
     ];
-    
+
     public $timestamps = false;
 
     public function cliente()

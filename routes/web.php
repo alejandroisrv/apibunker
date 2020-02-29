@@ -21,7 +21,7 @@ $router->post('/registro', 'AuthenticationController@register');
 $router->get('/activar-cuenta', 'AuthenticationController@activate');
 
 //GET DATA
-$router->group(['middleware' => 'auth:usuarios'], function () use ($router) {
+$router->group(['middleware' => 'auth:clientes'], function () use ($router) {
 
     $router->get('/producto/{slug}', 'ProductosController@getProducto');
     $router->get('/productos', 'ProductosController@getProductos');
@@ -34,7 +34,7 @@ $router->group(['middleware' => 'auth:usuarios'], function () use ($router) {
     $router->get('/productos/cart/add', 'ProductosController@addCart');
 
     $router->get('/productos/cart/empty', 'ProductosController@setEmptyCart');
-    
+
     $router->post('/pedidos/nuevo', 'ClientesController@nuevoPedido');
 
     $router->get('/clientes/pedidos', 'ClientesController@getMyPedidos');
